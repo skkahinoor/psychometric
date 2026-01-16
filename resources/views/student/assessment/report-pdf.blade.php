@@ -28,7 +28,6 @@
             margin: 16px 0 8px;
         }
 
-        /* Section title banner – updated to match red theme */
         .h2-banner {
             background: #b91c1c;
             color: #ffffff;
@@ -192,97 +191,111 @@
             padding-left: 5px;
         }
 
-        .stripe {
-            height: 16px;
-            width: 100%;
-        }
+       
+       
 
-        .stripe-1 {
-            background: #f97316;
-        }
+        /* ===== IMAGE-2 STYLE COVER ===== */
 
-        .stripe-2 {
-            background: #facc15;
-        }
+.cover-v2 {
+    text-align: center;
+    position: relative;
+    padding-top: 40px;
+}
 
-        /* New cover-page layout (no background image) */
-        .cover-inner {
-            height: 100%;
-            padding: 64px 72px 64px 72px;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-        }
+/* Title */
+.cover-v2 .cover-title {
+    font-size: 30px;
+    font-weight: 900;
+    color: #9f1d1d;
+    line-height: 1.25;
+    letter-spacing: 0.6px;
+    margin-bottom: 8px;
+}
 
-        .cover-top {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-        }
+/* Subtitle strip */
+.cover-v2 .cover-subtitle {
+    display: inline-block;
+    background: #fdecec;
+    padding: 8px 18px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #374151;
+    border-radius: 4px;
+    margin-top: 6px;
+}
 
-        .cover-logo {
-            text-align: right;
-            font-size: 12px;
-        }
+/* Illustration */
+.cover-v2 .cover-illustration-wrap img {
+    max-width: 280px;
+    margin: 30px auto 24px;
+}
 
-        .cover-logo img {
-            height: 32px;
-            margin-bottom: 4px;
-        }
+/* Student info box */
+.cover-v2 .canva-student-box {
+    width: 75%;
+    margin: 0 auto;
+    background: #ffffff;
+    border-radius: 6px;
+    border: 1px solid #e5e7eb;
+    padding: 14px 16px;
+    font-size: 11px;
+}
 
-        .cover-title-block {
-            margin-top: 80px;
-            text-align: center;
-        }
+/* Student title badge */
+.cover-v2 .cover-student-title {
+    background: #fdecec;
+    color: #9f1d1d;
+    font-weight: 700;
+    font-size: 11px;
+    padding: 5px 10px;
+    border-radius: 4px;
+}
 
-        .cover-main-title {
-            font-size: 26px;
-            font-weight: 800;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            color: #b91c1c;
-            line-height: 1.3;
-        }
+/* Decorative bottom shape */
+.cover-v2 .cover-footer-shape {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    width: 160px;
+    height: 160px;
+    background: #9f1d1d;
+    border-top-left-radius: 160px;
+}
 
-        .cover-subtitle {
-            margin-top: 8px;
-            font-size: 14px;
-            font-weight: 600;
-            text-transform: uppercase;
-            color: #b91c1c;
-        }
 
-        .cover-tagline {
-            margin-top: 18px;
-            font-size: 12px;
-            color: #4b5563;
-        }
-
-        .cover-student-box {
-            align-self: flex-start;
-            margin-top: 40px;
-            border: 1px solid #e5e7eb;
-            padding: 10px 14px;
-            border-radius: 4px;
-            font-size: 11px;
-            background: #ffffff;
-            box-shadow: 0 2px 6px rgba(15, 23, 42, 0.08);
-        }
-
-        .cover-student-title {
-            display: inline-block;
-            font-weight: 700;
-            font-size: 11px;
-            padding: 3px 8px;
-            margin-bottom: 6px;
-            background: #111827;
-            color: #ffffff;
-        }
-
-        /* Page margins (leave space for header + footer on inner pages) */
+        /* Auto-adjust cover spacing for PDF */
         @page {
+            size: A4;
             margin: 80px 32px 90px 32px;
         }
+
+      
+
+        /* Canva top-left decorative blocks */
+        .cover-top-blocks {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;   /* adjust if needed */
+            z-index: 5;
+        }
+
+
+        @media print {
+            .cover-header {
+                padding-top: 30px;
+                padding-bottom: 22px;
+            }
+
+            .cover-illustration-wrap {
+                margin: 22px 0 18px;
+            }
+
+            .canva-student-box {
+                width: 75%;
+            }
+        }
+
 
         /* Fixed header that repeats on every non-cover page */
         .pdf-header {
@@ -449,53 +462,46 @@
             width: 250px !important;
         }
 
-        /* Cover page illustration */
-        .cover-illustration {
-            position: absolute;
-            right: 60px;
-            bottom: 120px;
-            width: 260px;
-            opacity: 0.95;
-            z-index: 1;
-        }
-
-        /* Make sure content stays above image */
-        .cover-title-block,
-        .cover-student-box,
-        .cover-logo {
-            position: relative;
-            z-index: 2;
-        }
     </style>
     @php use Illuminate\Support\Str; @endphp
     @php $student = $student ?? auth()->user(); @endphp
 </head>
 
 <body>
+
+    {{-- Cover page start here  --}}
     <div class="cover-page">
-        <div class="cover-inner">
-            <img src="{{ asset('images/cover-illustration.png') }}" class="cover-illustration"
-                alt="Psychometric Assessment Illustration">
-            <div class="cover-top">
-                <div></div>
-                <div class="cover-logo">
-                    <img src="{{ asset('images/footerlogo.png') }}" alt="Career Map logo">
-                    <div>CAREER MAP</div>
+        <div class="cover-inner canva-cover cover-v2">
+
+            <img 
+            src="{{ asset('images/blocks.png') }}" 
+            class="cover-top-blocks" 
+            alt="Decorative blocks">
+        
+            <!-- Top band -->
+            <div class="cover-header">
+                {{-- <div class="cover-header-left-shape"></div> --}}
+
+                <div class="cover-header-content">
+                    <img src="{{ asset('images/footerlogo.png') }}" class="cover-logo-img">
+                    <div class="cover-title">
+                        COMPREHENSIVE<br>
+                        PSYCHOMETRIC<br>
+                        ASSESSMENT REPORT
+                    </div>
+                    <div class="cover-subtitle">
+                        Discover Your True Strengths and Potential.
+                    </div>
                 </div>
             </div>
 
-            <div class="cover-title-block">
-                <div class="cover-main-title">
-                    COMPREHENSIVE<br>
-                    PSYCHOMETRIC<br>
-                    ASSESSMENT REPORT
-                </div>
-                <div class="cover-tagline">
-                    Discover Your True Strengths and Potential.
-                </div>
+            <!-- Illustration -->
+            <div class="cover-illustration-wrap">
+                <img src="{{ asset('images/cover-illustration.png') }}" alt="Assessment Illustration">
             </div>
 
-            <div class="cover-student-box">
+            <!-- Student Info -->
+            <div class="cover-student-box canva-student-box">
                 <div class="cover-student-title">Student Information</div>
                 <div>Name: {{ $student->name }}</div>
                 <div>Class: {{ $student->class ?? '-' }}</div>
@@ -504,8 +510,12 @@
                 <div>Email Id: {{ $student->email ?? '-' }}</div>
                 <div>Phone No: {{ optional($student)->phone ?? '-' }}</div>
             </div>
+            <div class="cover-footer-shape"></div>
+
         </div>
     </div>
+    {{-- Cover page end here  --}}
+
 
     {{-- Fixed header for inner pages (starts after cover because of page-break on cover-page) --}}
     <div class="pdf-header">
@@ -560,9 +570,9 @@
     {{-- Dmain section start here  --}}
     <div class="domain-section">
         @foreach ($groupedResults as $domainName => $sections)
-            @php$slug = Str::slug($domainName);
-                                $domainDisplayName = $sections['cards'][0]['domain_display_name'] ?? $domainName;
-                        @endphp ?>
+            @php $slug = Str::slug($domainName);
+                $domainDisplayName = $sections['cards'][0]['domain_display_name'] ?? $domainName;
+            @endphp
             <div class="h2-banner">
                 <h2 class="h2-title">{{ $domainDisplayName }}</h2>
             </div>
