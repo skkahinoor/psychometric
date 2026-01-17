@@ -191,77 +191,81 @@
             padding-left: 5px;
         }
 
-       
-       
+
+
 
         /* ===== IMAGE-2 STYLE COVER ===== */
 
-.cover-v2 {
-    text-align: center;
-    position: relative;
-    padding-top: 40px;
-}
+        .cover-v2 {
+            text-align: center;
+            position: relative;
+            padding-top: 40px;
+        }
 
-/* Title */
-.cover-v2 .cover-title {
-    font-size: 30px;
-    font-weight: 900;
-    color: #9f1d1d;
-    line-height: 1.25;
-    letter-spacing: 0.6px;
-    margin-bottom: 8px;
-}
+        /* Title */
+        .cover-v2 .cover-title {
+            font-size: 42px;
+            font-weight: bolder;
+            color: #9f1d1d;
+            line-height: 1.15;
+            letter-spacing: 0.6px;
+            /* margin-bottom: 8px; */
+            font-family: sans-serif !important;
+        }
 
-/* Subtitle strip */
-.cover-v2 .cover-subtitle {
-    display: inline-block;
-    background: #fdecec;
-    padding: 8px 18px;
-    font-size: 14px;
-    font-weight: 600;
-    color: #374151;
-    border-radius: 4px;
-    margin-top: 6px;
-}
+        /* Subtitle strip */
+        .cover-v2 .cover-subtitle {
+            display: inline-block;
+            padding: 0px 18px;
+            font-size: 24px;
+            /* font-weight: 600; */
+            color: #0c0c0c;
+            /* padding-top: 100px; */
+            margin-top: -53px;
+        }
 
-/* Illustration */
-.cover-v2 .cover-illustration-wrap img {
-    max-width: 280px;
-    margin: 30px auto 24px;
-}
+        /* Illustration */
+        .cover-v2 .cover-illustration-wrap img {
+            max-width: 280px;
+            margin: 30px auto 24px;
+        }
 
-/* Student info box */
-.cover-v2 .canva-student-box {
-    width: 75%;
-    margin: 0 auto;
-    background: #ffffff;
-    border-radius: 6px;
-    border: 1px solid #e5e7eb;
-    padding: 14px 16px;
-    font-size: 11px;
-}
+        /* Student info box */
+        .cover-v2 .canva-student-box {
+            width: 75%;
+            margin: 0 auto;
+            padding: 5px 16px;
+            font-size: 20px;
+            margin-top: 480px;
+            text-align: left;
+        }
 
-/* Student title badge */
-.cover-v2 .cover-student-title {
-    background: #fdecec;
-    color: #9f1d1d;
-    font-weight: 700;
-    font-size: 11px;
-    padding: 5px 10px;
-    border-radius: 4px;
-}
+        /* Student title badge */
+        .cover-v2 .cover-student-title {
+            background: #fdecec;
+            color: #9f1d1d;
+            font-weight: 700;
+            font-size: 20px;
+            padding: 5px 10px;
+            border-radius: 4px;
+            width: 250px;
+        }
 
-/* Decorative bottom shape */
-.cover-v2 .cover-footer-shape {
-    position: absolute;
-    right: 0;
-    bottom: 0;
-    width: 160px;
-    height: 160px;
-    background: #9f1d1d;
-    border-top-left-radius: 160px;
-}
+        /* Decorative bottom shape */
+        .cover-v2 .cover-footer-shape {
+            position: absolute;
+            right: 0;
+            bottom: 0;
+            width: 160px;
+            height: 160px;
+            background: #9f1d1d;
+            border-top-left-radius: 160px;
+        }
 
+
+        .cover-header-content {
+            padding-left: 280px !important;
+        }
 
         /* Auto-adjust cover spacing for PDF */
         @page {
@@ -269,14 +273,15 @@
             margin: 80px 32px 90px 32px;
         }
 
-      
+
 
         /* Canva top-left decorative blocks */
         .cover-top-blocks {
             position: absolute;
             top: 0;
             left: 0;
-            width: 100%;   /* adjust if needed */
+            width: 100%;
+            /* adjust if needed */
             z-index: 5;
         }
 
@@ -386,11 +391,20 @@
 
         /* Ensure the first section renders as a standalone cover page */
         .cover-page {
-            position: relative;
-            height: 100vh;
-            /* full page height */
-            page-break-after: always;
-        }
+    position: relative;
+    width: 100%;
+    height: 100vh; /* fallback */
+    
+    /* PDF-safe A4 size */
+    min-height: 297mm;
+    page-break-after: always;
+
+    background-image: url('{{ asset('images/coverpage.png') }}');
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-size: cover; /* 🔥 THIS IS THE KEY */
+}
+
 
         /* Place the header over the full-page image */
         .cover-page .top-header {
@@ -461,7 +475,6 @@
             height: 100px !important;
             width: 250px !important;
         }
-
     </style>
     @php use Illuminate\Support\Str; @endphp
     @php $student = $student ?? auth()->user(); @endphp
@@ -473,31 +486,23 @@
     <div class="cover-page">
         <div class="cover-inner canva-cover cover-v2">
 
-            <img 
-            src="{{ asset('images/blocks.png') }}" 
-            class="cover-top-blocks" 
-            alt="Decorative blocks">
-        
+          
+
             <!-- Top band -->
             <div class="cover-header">
-                {{-- <div class="cover-header-left-shape"></div> --}}
-
                 <div class="cover-header-content">
-                    <img src="{{ asset('images/footerlogo.png') }}" class="cover-logo-img">
+                    <img src="{{ asset('images/footerlogo.png') }}" style="height: 50px; margin-left: 330px;" class="cover-logo-img">
                     <div class="cover-title">
                         COMPREHENSIVE<br>
                         PSYCHOMETRIC<br>
-                        ASSESSMENT REPORT
+                        <span style=" font-size: 25px;">ASSESSMENT REPORT</span>
                     </div>
+                    <br><br><br><br>
                     <div class="cover-subtitle">
-                        Discover Your True Strengths and Potential.
+                        Discover Your True<br>
+                        Strengths and Potential.
                     </div>
                 </div>
-            </div>
-
-            <!-- Illustration -->
-            <div class="cover-illustration-wrap">
-                <img src="{{ asset('images/cover-illustration.png') }}" alt="Assessment Illustration">
             </div>
 
             <!-- Student Info -->
@@ -510,7 +515,7 @@
                 <div>Email Id: {{ $student->email ?? '-' }}</div>
                 <div>Phone No: {{ optional($student)->phone ?? '-' }}</div>
             </div>
-            <div class="cover-footer-shape"></div>
+            {{-- <div class="cover-footer-shape"></div> --}}
 
         </div>
     </div>
@@ -570,7 +575,8 @@
     {{-- Dmain section start here  --}}
     <div class="domain-section">
         @foreach ($groupedResults as $domainName => $sections)
-            @php $slug = Str::slug($domainName);
+            @php 
+            $slug = Str::slug($domainName);
                 $domainDisplayName = $sections['cards'][0]['domain_display_name'] ?? $domainName;
             @endphp
             <div class="h2-banner">
