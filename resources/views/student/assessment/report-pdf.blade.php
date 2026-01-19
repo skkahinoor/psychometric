@@ -391,19 +391,21 @@
 
         /* Ensure the first section renders as a standalone cover page */
         .cover-page {
-    position: relative;
-    width: 100%;
-    height: 100vh; /* fallback */
-    
-    /* PDF-safe A4 size */
-    min-height: 297mm;
-    page-break-after: always;
+            position: relative;
+            width: 100%;
+            height: 100vh;
+            /* fallback */
 
-    background-image: url('{{ asset('images/coverpage.png') }}');
-    background-repeat: no-repeat;
-    background-position: center center;
-    background-size: cover; /* 🔥 THIS IS THE KEY */
-}
+            /* PDF-safe A4 size */
+            min-height: 297mm;
+            page-break-after: always;
+
+            background-image: url('{{ asset('images/coverpage.png') }}');
+            background-repeat: no-repeat;
+            background-position: center center;
+            background-size: cover;
+            /* 🔥 THIS IS THE KEY */
+        }
 
 
         /* Place the header over the full-page image */
@@ -486,12 +488,13 @@
     <div class="cover-page">
         <div class="cover-inner canva-cover cover-v2">
 
-          
+
 
             <!-- Top band -->
             <div class="cover-header">
                 <div class="cover-header-content">
-                    <img src="{{ asset('images/footerlogo.png') }}" style="height: 50px; margin-left: 330px;" class="cover-logo-img">
+                    <img src="{{ asset('images/footerlogo.png') }}" style="height: 50px; margin-left: 330px;"
+                        class="cover-logo-img">
                     <div class="cover-title">
                         COMPREHENSIVE<br>
                         PSYCHOMETRIC<br>
@@ -525,24 +528,25 @@
     {{-- Fixed header for inner pages (starts after cover because of page-break on cover-page) --}}
     <div class="pdf-header">
         <div class="pdf-header-inner">
-            <div class="pdf-header-left">
-                <img src="{{ asset('images/footerlogo.png') }}" alt="Career Map logo">
-                <span>Career Map – Comprehensive Psychometric Assessment Report</span>
-            </div>
             <div class="pdf-header-right">
                 {{ $student->name }}
             </div>
+            <div class="pdf-header-left">
+                <img src="{{ asset('images/footerlogo.png') }}" alt="Career Map logo">
+                {{-- <span>Career Map – Comprehensive Psychometric Assessment Report</span> --}}
+            </div>
+           
         </div>
     </div>
 
     <div>
-        <div>
-            <div class="top-header-h1">
-                <div class="container-h1">
-                    <div class="title-h1">Introduction</div>
-                </div>
-                <div class="stripe stripe-1"></div>
-                <div class="stripe stripe-2"></div>
+        <div class="domain-section">
+            <div class="h2-banner">
+                {{-- <div class="container-h1"> --}}
+                    <div class="h1-title">Introduction</div>
+                {{-- </div> --}}
+                {{-- <div class="stripe stripe-1"></div>
+                <div class="stripe stripe-2"></div> --}}
             </div>
 
             <div class="meta">
@@ -554,20 +558,7 @@
                     continuous assessment.</p>
             </div>
 
-            <div class="meta">
-                <div class="h2-banner">
-                    <h2 class="h2-title">Tools Used in This Report</h2>
-                </div>
-                <ul class="meta">
-                    <li><strong>Holland Code (RIASEC):</strong> Interest areas and vocational fit.</li>
-                    <li><strong>NEO FFI (Big Five):</strong> Personality traits across five core dimensions.</li>
-                    <li><strong>VARK:</strong> Preferred learning style and study strategies.</li>
-                    <li><strong>Work Values Inventory:</strong> Motivational drivers in work environments.</li>
-                    <li><strong>Goal Orientation:</strong> Short-term versus long-term focus and planning.</li>
-                    <li><strong>Aptitude Profile:</strong> Cognitive strengths supporting academic and career choices.
-                    </li>
-                </ul>
-            </div>
+            
         </div>
 
     </div>
@@ -575,8 +566,8 @@
     {{-- Dmain section start here  --}}
     <div class="domain-section">
         @foreach ($groupedResults as $domainName => $sections)
-            @php 
-            $slug = Str::slug($domainName);
+            @php
+                $slug = Str::slug($domainName);
                 $domainDisplayName = $sections['cards'][0]['domain_display_name'] ?? $domainName;
             @endphp
             <div class="h2-banner">
