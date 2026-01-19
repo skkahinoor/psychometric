@@ -334,10 +334,10 @@
 
         .pdf-header-inner {
             /* height: 40px; */
-    padding: 30px;
-    /* border-bottom: 2px solid #9f1d1d; */
-    font-size: 17px;
-    color: #000000;
+            padding: 30px;
+            /* border-bottom: 2px solid #9f1d1d; */
+            font-size: 17px;
+            color: #000000;
         }
 
         /* STUDENT NAME → LEFT */
@@ -383,7 +383,7 @@
         }
 
         /* Main footer body */
-        .pdf-footer .footer-inner {
+        /* .pdf-footer .footer-inner {
             background: #ffffff;
             height: 56px;
             display: flex;
@@ -408,7 +408,32 @@
         .pdf-footer .footer-right {
             text-align: right;
             min-width: 80px;
+        } */
+
+        .pdf-footer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 60px;
+            z-index: 1000;
+            background: #ffffff;
         }
+
+        /* .footer-top-stripe-1 {
+            height: 2px;
+            background: #9f1d1d;
+        }
+
+        .footer-top-stripe-2 {
+            height: 2px;
+            background: #f59e0b;
+        } */
+
+        .footer-inner {
+            padding: 10px 32px;
+        }
+
 
         /* Ensure the first section renders as a standalone cover page */
         .cover-page {
@@ -500,11 +525,12 @@
         }
 
         .pdf-page {
-            padding-top: 90px;   /* 🔥 NOT margin */
-    padding-bottom: 80px;
-    padding-left: 32px;
-    padding-right: 32px;
-    page-break-after: always;
+            padding-top: 90px;
+            /* 🔥 NOT margin */
+            padding-bottom: 80px;
+            padding-left: 32px;
+            padding-right: 32px;
+            page-break-after: always;
         }
 
         .intro-image-wrap {
@@ -574,7 +600,7 @@
                     <td align="left" style="font-size:18px; font-weight:600; border: none;">
                         {{ $student->name }}
                     </td>
-        
+
                     <!-- LOGO → RIGHT -->
                     <td align="right" style="border: none;">
                         <img src="{{ asset('images/footerlogo.png') }}" style="height:40px;">
@@ -582,19 +608,36 @@
                 </tr>
             </table>
         </div>
-        
+
     </div>
 
     <!-- Fixed footer -->
     <div class="pdf-footer">
-        <div class="footer-top-stripe-1"></div>
-        <div class="footer-top-stripe-2"></div>
+        {{-- <div class="footer-top-stripe-1"></div>
+        <div class="footer-top-stripe-2"></div> --}}
+
         <div class="footer-inner">
-            <div class="footer-left">+91 94372 08179</div>
-            <div class="footer-center">connect@careermap.in</div>
-            <div class="footer-right">Page {PAGE_NUM}</div>
+            <table width="100%" cellpadding="0" cellspacing="0" style="border-top: 2px solid #9f1d1d;">
+                <tr>
+                    <!-- LEFT -->
+                    <td align="left" style="font-size:15px; color:#000000; border: none;">
+                        ☎ +91 94372 08179
+                    </td>
+
+                    <!-- CENTER -->
+                    <td align="center" style="font-size:15px; color:#000000; border: none;">
+                        ✉ connect@careermap.in
+                    </td>
+
+                    <!-- RIGHT -->
+                    <td align="right" style="font-size:15px; color:#000000; border: none;">
+                        Page {PAGE_NUM}
+                    </td>
+                </tr>
+            </table>
         </div>
     </div>
+
 
 
 
@@ -924,7 +967,8 @@
                     @endif
 
                     @if (!empty($subjects))
-                        <div style="margin-bottom:6px;"><strong>Subjects</strong> - <span>{!! $subjects !!}</span>
+                        <div style="margin-bottom:6px;"><strong>Subjects</strong> -
+                            <span>{!! $subjects !!}</span>
                         </div>
                     @endif
 
