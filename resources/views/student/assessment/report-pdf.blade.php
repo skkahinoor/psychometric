@@ -270,7 +270,8 @@
         /* Auto-adjust cover spacing for PDF */
         @page {
             size: A4;
-            margin: 80px 32px 90px 32px;
+            /* margin: 80px 32px 90px 32px; */
+            margin: 0;
         }
 
 
@@ -305,11 +306,12 @@
         /* Fixed header that repeats on every non-cover page */
         .pdf-header {
             position: fixed;
+            top: 0;
             left: 0;
             right: 0;
-            top: 0;
             height: 60px;
-            z-index: 900;
+            z-index: 1000;
+            background: #ffffff;
         }
 
         .pdf-header-inner {
@@ -341,9 +343,9 @@
         /* Repeating footer for every PDF page */
         .pdf-footer {
             position: fixed;
+            bottom: 0;
             left: 0;
             right: 0;
-            bottom: 0;
             height: 60px;
             z-index: 1000;
         }
@@ -477,6 +479,26 @@
             height: 100px !important;
             width: 250px !important;
         }
+
+        .pdf-page {
+            margin-top: 90px;
+            /* header height + gap */
+            margin-bottom: 90px;
+            /* footer height + gap */
+            padding: 0 32px;
+            page-break-after: always;
+        }
+
+        .intro-image-wrap {
+            text-align: center;
+            margin-top: 40px;
+        }
+
+        .intro-image-wrap img {
+            width: 320px;
+            /* Canva-like size */
+            height: auto;
+        }
     </style>
     @php use Illuminate\Support\Str; @endphp
     @php $student = $student ?? auth()->user(); @endphp
@@ -525,45 +547,50 @@
     {{-- Cover page end here  --}}
 
 
-    {{-- Fixed header for inner pages (starts after cover because of page-break on cover-page) --}}
+    <!-- Fixed header -->
     <div class="pdf-header">
         <div class="pdf-header-inner">
-            <div class="pdf-header-right">
-                {{ $student->name }}
-            </div>
+            <div class="pdf-header-right">{{ $student->name }}</div>
             <div class="pdf-header-left">
-                <img src="{{ asset('images/footerlogo.png') }}" alt="Career Map logo">
-                {{-- <span>Career Map – Comprehensive Psychometric Assessment Report</span> --}}
+                <img src="{{ asset('images/footerlogo.png') }}">
             </div>
-           
         </div>
     </div>
 
-    <div>
-        <div class="domain-section">
-            <div class="h2-banner">
-                {{-- <div class="container-h1"> --}}
-                    <div class="h1-title">Introduction</div>
-                {{-- </div> --}}
-                {{-- <div class="stripe stripe-1"></div>
-                <div class="stripe stripe-2"></div> --}}
-            </div>
-
-            <div class="meta">
-                <p class="meta">The report presented by Career Map outlines key observations about
-                    {{ $student->name }}'s personality profile, career interests, work preferences, cognitive
-                    strengths,
-                    and future career orientation. These outcomes are indicative, not definitive, and must be reviewed
-                    again in subsequent counselling meetings. Recommendations may shift based on deeper interaction and
-                    continuous assessment.</p>
-            </div>
-
-            
+    <!-- Fixed footer -->
+    <div class="pdf-footer">
+        <div class="footer-top-stripe-1"></div>
+        <div class="footer-top-stripe-2"></div>
+        <div class="footer-inner">
+            <div class="footer-left">+91 94372 08179</div>
+            <div class="footer-center">connect@careermap.in</div>
+            <div class="footer-right">Page {PAGE_NUM}</div>
         </div>
-
     </div>
 
-    {{-- Dmain section start here  --}}
+    
+
+    {{-- Introduction start page  --}}
+    <div class="pdf-page">
+        <div class="h2-banner">
+            <h2 class="h2-title">Introduction</h2>
+        </div>
+
+        <p class="meta">The report presented by Career Map outlines key observations about
+            {{ $student->name }}'s personality profile, career interests, work preferences, cognitive
+            strengths,
+            and future career orientation. These outcomes are indicative, not definitive, and must be reviewed
+            again in subsequent counselling meetings. Recommendations may shift based on deeper interaction and
+            continuous assessment.
+        </p>
+
+        <!-- CENTRAL IMAGE -->
+        <div class="intro-image-wrap">
+            <img src="{{ asset('images/alldomain.png') }}" alt="Psychometric Domains">
+        </div>
+    </div>
+
+    {{-- Domain section start here  --}}
     <div class="domain-section">
         @foreach ($groupedResults as $domainName => $sections)
             @php
@@ -931,7 +958,7 @@
     <br>
     <br>
     <!-- Fixed footer that repeats on every page (must be inside body for dompdf) -->
-    <div class="pdf-footer">
+    {{-- <div class="pdf-footer">
         <div class="footer-top-stripe-1"></div>
         <div class="footer-top-stripe-2"></div>
         <div class="footer-inner">
@@ -939,41 +966,9 @@
             <div class="footer-center">connect@careermap.in</div>
             <div class="footer-right">Page {PAGE_NUM}</div>
         </div>
-    </div>
+    </div> --}}
 
-    {{-- Generate this pdf report to image format code  --}}
-    {{-- @if (!empty($export_image))
-        <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
-        <script>
-            (function() {
-                function downloadPng() {
-                    const body = document.body;
-                    const prevBg = body.style.backgroundColor;
-                    body.style.backgroundColor = '#ffffff';
-                    html2canvas(body, { scale: 2, useCORS: true, backgroundColor: '#ffffff' }).then(function(canvas) {
-                        const dataUrl = canvas.toDataURL('image/png');
-                        const link = document.createElement('a');
-                        var studentName = @json($student->name ?? 'report');
-                        var safe = String(studentName).replace(/[^a-z0-9]+/gi, '-').replace(/^-+|-+$/g, '').toLowerCase();
-                        link.href = dataUrl;
-                        link.download = (safe || 'report') + '-full-report.png';
-                        document.body.appendChild(link);
-                        link.click();
-                        document.body.removeChild(link);
-                        body.style.backgroundColor = prevBg;
-                    }).catch(function() {
-                        alert('Failed to generate image');
-                        body.style.backgroundColor = prevBg;
-                    });
-                }
-                if (document.readyState === 'complete' || document.readyState === 'interactive') {
-                    setTimeout(downloadPng, 500);
-                } else {
-                    document.addEventListener('DOMContentLoaded', function(){ setTimeout(downloadPng, 500); });
-                }
-            })();
-        </script>
-    @endif --}}
+
 </body>
 
 </html>
