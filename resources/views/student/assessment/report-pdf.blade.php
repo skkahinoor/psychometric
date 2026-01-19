@@ -288,8 +288,12 @@
         /* Auto-adjust cover spacing for PDF */
         @page {
             size: A4;
-            /* margin: 80px 32px 90px 32px; */
             margin: 0;
+            counter-increment: page;
+        }
+
+        .page-number:before {
+            content: "Page " counter(page);
         }
 
 
@@ -613,8 +617,6 @@
 
     <!-- Fixed footer -->
     <div class="pdf-footer">
-        {{-- <div class="footer-top-stripe-1"></div>
-        <div class="footer-top-stripe-2"></div> --}}
 
         <div class="footer-inner">
             <table width="100%" cellpadding="0" cellspacing="0" style="border-top: 2px solid #9f1d1d;">
@@ -630,9 +632,11 @@
                     </td>
 
                     <!-- RIGHT -->
-                    <td align="right" style="font-size:15px; color:#000000; border: none;">
-                        Page {PAGE_NUM}
+                    <td align="right" class="page-number" style="font-size:15px; color:#000000; border: none;">
+                        
                     </td>
+                    
+
                 </tr>
             </table>
         </div>
