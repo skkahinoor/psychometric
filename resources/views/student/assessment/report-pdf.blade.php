@@ -29,26 +29,44 @@
         }
 
         .h2-banner {
-            background: #b91c1c;
-            color: #ffffff;
-            padding: 12px 16px;
-            margin: 16px 0 8px 0;
             position: relative;
-            overflow: hidden;
+            height: 52px;
+
+            /* BACKGROUND IMAGE */
+            background-image: url('{{ asset('images/h2-bg.png') }}');
+            background-repeat: no-repeat;
+            background-position: left center;
+            background-size: auto 100%;
+
+            /* TEXT COLOR */
+            color: #ffffff;
+
+            /* SPACE FOR TEXT */
+            padding-left: 70px;
+            padding-right: 20px;
+
+            display: flex;
+            align-items: center;
+
+            margin: 16px 0 0px 0;
         }
+
 
         .h2-banner .h2-title {
             font-size: 16px;
             font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 0.5px;
-            margin: 0;
-            position: relative;
-            z-index: 2;
+            margin: 0px;
             color: #ffffff;
         }
 
-        .h2-banner::after {
+        .h2-title {
+            padding-top: 10px;
+        }
+
+
+        /* .h2-banner::after {
             content: '';
             position: absolute;
             bottom: 0;
@@ -57,7 +75,7 @@
             height: 2px;
             background: #f97316;
             z-index: 1;
-        }
+        } */
 
         h3 {
             font-size: 14px;
@@ -315,30 +333,31 @@
         }
 
         .pdf-header-inner {
-            height: 60px;
-            padding: 10px 32px;
-            border-bottom: 2px solid #e5e7eb;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            font-size: 11px;
-            color: #374151;
+            /* height: 40px; */
+    padding: 30px;
+    /* border-bottom: 2px solid #9f1d1d; */
+    font-size: 17px;
+    color: #000000;
         }
 
+        /* STUDENT NAME → LEFT */
+        .pdf-header-right {
+            order: 1;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        /* LOGO → RIGHT */
         .pdf-header-left {
+            order: 2;
             display: flex;
             align-items: center;
-            gap: 8px;
-            font-weight: 600;
         }
 
         .pdf-header-left img {
             height: 26px;
         }
 
-        .pdf-header-right {
-            font-weight: 600;
-        }
 
         /* Repeating footer for every PDF page */
         .pdf-footer {
@@ -481,12 +500,11 @@
         }
 
         .pdf-page {
-            margin-top: 90px;
-            /* header height + gap */
-            margin-bottom: 90px;
-            /* footer height + gap */
-            padding: 0 32px;
-            page-break-after: always;
+            padding-top: 90px;   /* 🔥 NOT margin */
+    padding-bottom: 80px;
+    padding-left: 32px;
+    padding-right: 32px;
+    page-break-after: always;
         }
 
         .intro-image-wrap {
@@ -550,11 +568,21 @@
     <!-- Fixed header -->
     <div class="pdf-header">
         <div class="pdf-header-inner">
-            <div class="pdf-header-right">{{ $student->name }}</div>
-            <div class="pdf-header-left">
-                <img src="{{ asset('images/footerlogo.png') }}">
-            </div>
+            <table width="100%" cellpadding="0" cellspacing="0" style="border-bottom: 2px solid #9f1d1d;">
+                <tr>
+                    <!-- NAME → LEFT -->
+                    <td align="left" style="font-size:18px; font-weight:600; border: none;">
+                        {{ $student->name }}
+                    </td>
+        
+                    <!-- LOGO → RIGHT -->
+                    <td align="right" style="border: none;">
+                        <img src="{{ asset('images/footerlogo.png') }}" style="height:40px;">
+                    </td>
+                </tr>
+            </table>
         </div>
+        
     </div>
 
     <!-- Fixed footer -->
@@ -568,7 +596,7 @@
         </div>
     </div>
 
-    
+
 
     {{-- Introduction start page  --}}
     <div class="pdf-page">
@@ -576,7 +604,7 @@
             <h2 class="h2-title">Introduction</h2>
         </div>
 
-        <p class="meta">The report presented by Career Map outlines key observations about
+        <p class="meta" style="font-size: 17px;">The report presented by Career Map outlines key observations about
             {{ $student->name }}'s personality profile, career interests, work preferences, cognitive
             strengths,
             and future career orientation. These outcomes are indicative, not definitive, and must be reviewed
@@ -586,12 +614,13 @@
 
         <!-- CENTRAL IMAGE -->
         <div class="intro-image-wrap">
-            <img src="{{ asset('images/alldomain.png') }}" alt="Psychometric Domains">
+            <img src="{{ asset('images/alldomain.png') }}" style="height: 550px; width: 550px;"
+                alt="Psychometric Domains">
         </div>
     </div>
 
     {{-- Domain section start here  --}}
-    <div class="domain-section">
+    <div class="pdf-page domain-section">
         @foreach ($groupedResults as $domainName => $sections)
             @php
                 $slug = Str::slug($domainName);
@@ -641,7 +670,7 @@
             </div>
 
 
-            <div class="careerpath-section">
+            <div class="pdf-page careerpath-section">
                 @if (!empty($sections['cards']) && $domainName !== 'GOAL ORIENTATION')
                     @php
                         $careerPathSections = $sections['cards'];
@@ -707,7 +736,7 @@
 
 
             {{-- Static bar chart (PDF-friendly, mirrors Result page data) --}}
-            <div class="careerpath-chart">
+            <div class="pdf-page careerpath-chart">
                 @if (!empty($sections['chart']))
                     <div class="h2-banner">
                         <h2 class="h2-title">Visual Representation of your Score</h2>
@@ -740,7 +769,7 @@
 
 
 
-    <div class="meta">
+    <div class="pdf-page ">
         <div class="h2-banner">
             <h2 class="h2-title">Integrated Analysis</h2>
         </div>
@@ -795,7 +824,7 @@
 
 
 
-    <div class="meta">
+    <div class="pdf-page meta">
         <div class="h2-banner">
             <h2 class="h2-title">Career Clusters with Total Weightage</h2>
         </div>
@@ -850,7 +879,7 @@
         @endif
     </div>
 
-    <div class="meta" style="margin-top: 10px;">
+    <div class="pdf-page meta" style="margin-top: 10px;">
         <div class="h2-banner">
             <h2 class="h2-title">Customized Career Recommendation</h2>
         </div>
@@ -939,7 +968,7 @@
         @endforeach
     </div>
 
-    <div class="meta">
+    <div class="pdf-page meta">
         <div class="h2-banner">
             <h2 class="h2-title">Counselor's Remarks</h2>
         </div>
