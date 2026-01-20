@@ -534,18 +534,22 @@
             padding-bottom: 80px;
             padding-left: 32px;
             padding-right: 32px;
-            page-break-after: always;
+            page-break-inside: auto;
         }
 
         .intro-image-wrap {
             text-align: center;
-            margin-top: 40px;
+            margin-top: 0px;
         }
 
         .intro-image-wrap img {
             width: 320px;
             /* Canva-like size */
             height: auto;
+        }
+
+        .page-break {
+            page-break-before: always;
         }
     </style>
     @php use Illuminate\Support\Str; @endphp
@@ -645,7 +649,7 @@
             <h2 class="h2-title">Introduction</h2>
         </div>
 
-        <p class="meta" style="font-size: 17px;">The report presented by Career Map outlines key observations about
+        <p class="meta" style="font-size: 18px;">The report presented by Career Map outlines key observations about
             {{ $student->name }}'s personality profile, career interests, work preferences, cognitive
             strengths,
             and future career orientation. These outcomes are indicative, not definitive, and must be reviewed
@@ -660,6 +664,9 @@
         </div>
     </div>
 
+    {{-- this code helps to break any page of pdf --}}
+    {{-- <div class="page-break"></div> --}}
+
     {{-- Domain section start here  --}}
     <div class="pdf-page domain-section">
         @foreach ($groupedResults as $domainName => $sections)
@@ -673,9 +680,20 @@
 
             <div class="meta">
                 @if (isset($sections['description']) && $sections['description'])
-                    <div class="careerdesc"><b>Description:</b> {!! $sections['description'] !!}</div>
+                    <div class="careerdesc" style="font-size: 14px;"><b>Description:</b> {!! $sections['description'] !!}</div>
+                @endif
+
+                @if ($domainDisplayName === 'INTEREST')
+                    <!-- CENTRAL IMAGE -->
+                    <div class="intro-image-wrap">
+                        <img src="{{ asset('images/domainriasec.png') }}" style="height: 530px; width: 530px;"
+                            alt="Psychometric Domains">
+                    </div>
+                    <div class="page-break"></div>
                 @endif
             </div>
+
+
 
             <div class="section-contaner">
                 @foreach ($sections['cards'] ?? [] as $section)
@@ -802,12 +820,6 @@
 
         @endforeach
     </div>
-
-
-    <br><br>
-
-
-
 
 
     <div class="pdf-page ">
@@ -1025,19 +1037,6 @@
         <p>XYZ</p>
         <p>Career Counsellor</p>
     </div>
-
-    <br>
-    <br>
-    <!-- Fixed footer that repeats on every page (must be inside body for dompdf) -->
-    {{-- <div class="pdf-footer">
-        <div class="footer-top-stripe-1"></div>
-        <div class="footer-top-stripe-2"></div>
-        <div class="footer-inner">
-            <div class="footer-left">+91 94372 08179</div>
-            <div class="footer-center">connect@careermap.in</div>
-            <div class="footer-right">Page {PAGE_NUM}</div>
-        </div>
-    </div> --}}
 
 
 </body>
