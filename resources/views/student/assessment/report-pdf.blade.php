@@ -617,26 +617,20 @@
 
     <!-- Fixed footer -->
     <div class="pdf-footer">
-
         <div class="footer-inner">
             <table width="100%" cellpadding="0" cellspacing="0" style="border-top: 2px solid #9f1d1d;">
                 <tr>
                     <!-- LEFT -->
-                    <td align="left" style="font-size:15px; color:#000000; border: none;">
+                    <td align="left" style="font-size:16px; color:#000000; border: none;">
                         ☎ +91 94372 08179
                     </td>
-
                     <!-- CENTER -->
-                    <td align="center" style="font-size:15px; color:#000000; border: none;">
+                    <td align="left" style="font-size:17px; color:#000000; border: none;">
                         ✉ connect@careermap.in
                     </td>
-
                     <!-- RIGHT -->
-                    <td align="right" class="page-number" style="font-size:15px; color:#000000; border: none;">
-                        
+                    <td align="right" class="page-number" style="font-size:16px; color:#000000; border: none;">
                     </td>
-                    
-
                 </tr>
             </table>
         </div>
