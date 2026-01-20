@@ -665,69 +665,75 @@
     </div>
 
     {{-- this code helps to break any page of pdf --}}
-    {{-- <div class="page-break"></div> --}}
+    <div class="page-break"></div>
 
     {{-- Domain section start here  --}}
-    <div class="pdf-page domain-section">
+    <div class="domain-section">
         @foreach ($groupedResults as $domainName => $sections)
-            @php
-                $slug = Str::slug($domainName);
-                $domainDisplayName = $sections['cards'][0]['domain_display_name'] ?? $domainName;
-            @endphp
-            <div class="h2-banner">
-                <h2 class="h2-title">{{ $domainDisplayName }}</h2>
+            <div class="pdf-page">
+                @php
+                    $slug = Str::slug($domainName);
+                    $domainDisplayName = $sections['cards'][0]['domain_display_name'] ?? $domainName;
+                @endphp
+                <div class="h2-banner">
+                    <h2 class="h2-title">{{ $domainDisplayName }}</h2>
+                </div>
+
+                <div class="meta">
+                    @if (isset($sections['description']) && $sections['description'])
+                        <div class="careerdesc" style="font-size: 14px;"><b>Description:</b> {!! $sections['description'] !!}
+                        </div>
+                    @endif
+
+                    @if ($domainDisplayName === 'INTEREST')
+                        <!-- CENTRAL IMAGE -->
+                        <div class="intro-image-wrap">
+                            <img src="{{ asset('images/domainriasec.png') }}" style="height: 530px; width: 530px;"
+                                alt="Psychometric Domains">
+                        </div>
+                    @endif
+                </div>
             </div>
 
-            <div class="meta">
-                @if (isset($sections['description']) && $sections['description'])
-                    <div class="careerdesc" style="font-size: 14px;"><b>Description:</b> {!! $sections['description'] !!}</div>
-                @endif
+            <div class="page-break"></div>
 
-                @if ($domainDisplayName === 'INTEREST')
-                    <!-- CENTRAL IMAGE -->
-                    <div class="intro-image-wrap">
-                        <img src="{{ asset('images/domainriasec.png') }}" style="height: 530px; width: 530px;"
-                            alt="Psychometric Domains">
-                    </div>
-                    <div class="page-break"></div>
-                @endif
-            </div>
-
-
-
-            <div class="section-contaner">
-                @foreach ($sections['cards'] ?? [] as $section)
-                    <div class="section">
-                        <img src="{{ asset($section['section_image']) }}" alt="{{ $section['section_name'] }} image"
-                            class="meta">
-                        <h3>{{ $section['section_name'] }} @if (isset($section['label']))
-                                - {{ $section['label'] }}
+            <div class="pdf-page">
+                <div class="section-contaner">
+                    @foreach ($sections['cards'] ?? [] as $section)
+                        <div class="section">
+                            <img src="{{ asset($section['section_image']) }}"
+                                alt="{{ $section['section_name'] }} image" class="meta">
+                            <h3>{{ $section['section_name'] }} @if (isset($section['label']))
+                                    - {{ $section['label'] }}
+                                @endif
+                            </h3>
+                            <div class="meta">{{ $domainName === 'APTITUDE' ? 'Total Score:' : 'Average Score:' }}
+                                {{ $section['average'] }}</div>
+                            <div class="meta">{!! strip_tags($section['section_description']) !!}</div>
+                            @if ($domainName === 'OCEAN')
+                                <div class="meta"><strong>{{ $section['label'] }}:</strong>
+                                    {{ $section['relevant_description'] }}</div>
+                            @elseif ($domainName === 'WORK VALUES')
+                                @if ($section['label'] === 'Low')
+                                    <div class="meta"><strong>Low:</strong> {{ $section['low'] }}</div>
+                                @elseif ($section['label'] === 'Mid')
+                                    <div class="meta"><strong>Mid:</strong> {{ $section['mid'] }}</div>
+                                @elseif ($section['label'] === 'High')
+                                    <div class="meta"><strong>High:</strong> {{ $section['high'] }}</div>
+                                @endif
+                            @else
+                                <div class="meta"><strong>Key Traits:</strong> {{ $section['section_keytraits'] }}
+                                </div>
+                                <div class="meta"><strong>Enjoys:</strong> {{ $section['section_enjoys'] }}</div>
+                                <div class="meta"><strong>Ideal Environments:</strong>
+                                    {{ $section['section_idealenvironments'] }}</div>
                             @endif
-                        </h3>
-                        <div class="meta">{{ $domainName === 'APTITUDE' ? 'Total Score:' : 'Average Score:' }}
-                            {{ $section['average'] }}</div>
-                        <div class="meta">{!! strip_tags($section['section_description']) !!}</div>
-                        @if ($domainName === 'OCEAN')
-                            <div class="meta"><strong>{{ $section['label'] }}:</strong>
-                                {{ $section['relevant_description'] }}</div>
-                        @elseif ($domainName === 'WORK VALUES')
-                            @if ($section['label'] === 'Low')
-                                <div class="meta"><strong>Low:</strong> {{ $section['low'] }}</div>
-                            @elseif ($section['label'] === 'Mid')
-                                <div class="meta"><strong>Mid:</strong> {{ $section['mid'] }}</div>
-                            @elseif ($section['label'] === 'High')
-                                <div class="meta"><strong>High:</strong> {{ $section['high'] }}</div>
-                            @endif
-                        @else
-                            <div class="meta"><strong>Key Traits:</strong> {{ $section['section_keytraits'] }}</div>
-                            <div class="meta"><strong>Enjoys:</strong> {{ $section['section_enjoys'] }}</div>
-                            <div class="meta"><strong>Ideal Environments:</strong>
-                                {{ $section['section_idealenvironments'] }}</div>
-                        @endif
-                    </div>
-                @endforeach
+                        </div>
+                    @endforeach
+                </div>
             </div>
 
+            <div class="page-break"></div>
 
             <div class="pdf-page careerpath-section">
                 @if (!empty($sections['cards']) && $domainName !== 'GOAL ORIENTATION')
@@ -793,6 +799,7 @@
                 @endif
             </div>
 
+            <div class="page-break"></div>
 
             {{-- Static bar chart (PDF-friendly, mirrors Result page data) --}}
             <div class="pdf-page careerpath-chart">
@@ -821,6 +828,7 @@
         @endforeach
     </div>
 
+    <div class="page-break"></div>
 
     <div class="pdf-page ">
         <div class="h2-banner">
@@ -830,7 +838,7 @@
             engagement. His preference for autonomy and long-term orientation aligns well with careers requiring deep
             engagement and self-direction.</p>
     </div>
-
+    <div class="page-break"></div>
     @php
         $allCategoryCountsBySection = [];
         foreach ($groupedResults as $domainName => $sections) {
@@ -931,7 +939,7 @@
             <div class="meta">No career clusters to display.</div>
         @endif
     </div>
-
+    <div class="page-break"></div>
     <div class="pdf-page meta" style="margin-top: 10px;">
         <div class="h2-banner">
             <h2 class="h2-title">Customized Career Recommendation</h2>
@@ -1021,24 +1029,26 @@
             </div>
         @endforeach
     </div>
-
-    <div class="pdf-page meta">
-        <div class="h2-banner">
-            <h2 class="h2-title">Counselor's Remarks</h2>
+    <div class="page-break"></div>
+    <div class="pdf-page">
+        <div class="meta">
+            <div class="h2-banner">
+                <h2 class="h2-title">Counselor's Remarks</h2>
+            </div>
+            <p>{{ $student->name }} exhibits a balanced and mature personality marked by self-awareness
+                and goal clarity. With strong cognitive strengths and humanistic values, {{ $student->name }} can grow
+                into
+                leadership roles in fields that demand both intellect and empathy. Encouraging exploratory learning and
+                mentorship will enrich this trajectory.</p>
         </div>
-        <p>{{ $student->name }} exhibits a balanced and mature personality marked by self-awareness
-            and goal clarity. With strong cognitive strengths and humanistic values, {{ $student->name }} can grow into
-            leadership roles in fields that demand both intellect and empathy. Encouraging exploratory learning and
-            mentorship will enrich this trajectory.</p>
+
+        <div class="meta">
+            <p>Signature</p>
+            <p>XYZ</p>
+            <p>Career Counsellor</p>
+        </div>
     </div>
-
-    <div class="meta">
-        <p>Signature</p>
-        <p>XYZ</p>
-        <p>Career Counsellor</p>
-    </div>
-
-
+    <div class="page-break"></div>
 </body>
 
 </html>
