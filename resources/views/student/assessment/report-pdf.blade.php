@@ -51,6 +51,29 @@
             margin: 16px 0 0px 0;
         }
 
+        .h2-subbanner {
+            position: relative;
+            height: 60px;
+            width: auto;
+            /* BACKGROUND IMAGE */
+            background-image: url('{{ asset('images/subtitlebanner.png') }}');
+            background-repeat: no-repeat;
+            background-position: left center;
+            background-size: auto 100%;
+
+            /* TEXT COLOR */
+            color: #ffffff;
+
+            /* SPACE FOR TEXT */
+            padding-left: 70px;
+            padding-right: 20px;
+
+            display: flex;
+            align-items: center;
+
+            margin: 16px 0 0px 0;
+        }
+
 
         .h2-banner .h2-title {
             font-size: 16px;
@@ -698,6 +721,12 @@
             <div class="page-break"></div>
 
             <div class="pdf-page">
+                @if ($domainDisplayName === 'INTEREST')
+                <div class="h2-subbanner">
+                    <p class="text-white">YOUR TOP 3 CAREER INTERESTS ARE</p>
+                    <h2 class="h2-title">Introduction</h2>
+                </div>
+            @endif
                 <div class="section-contaner">
                     @foreach ($sections['cards'] ?? [] as $section)
                         <div class="section">
