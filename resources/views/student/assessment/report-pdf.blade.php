@@ -606,9 +606,9 @@
         /* TITLE BACKGROUND IMAGE BAR */
         .titlebackground {
             position: relative;
-            width: 220px;
+            width: 230px;
             /* 🔥 REDUCE from 350px */
-            height: 48px;
+            height: 60px;
             /* match design */
 
             background-image: url('{{ asset('images/sectionbackground.png') }}');
@@ -619,8 +619,9 @@
 
             display: flex;
             align-items: center;
-            padding-left: 42px;
+            /* padding-left: 42px; */
             margin-bottom: 6px;
+            margin-right: 25px;
         }
 
         /* NUMBER CIRCLE */
@@ -855,10 +856,10 @@
                 {{-- new code --}}
                 <div class="section-contaner">
                     @foreach ($sections['cards'] ?? [] as $index => $section)
-                        <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:18px; border: none;">
+                        <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:8px; border: none;">
                             <tr>
                                 {{-- LEFT COLUMN --}}
-                                <td width="100" valign="top" style="padding-right:4px; border: none;">
+                                <td width="80" valign="top" style="border: none;">
 
                                     <div class="titlebackground">
                                         <div class="interest-badge">
@@ -869,7 +870,7 @@
                                         </div>
                                     </div>
 
-                                    <div class="interest-score">
+                                    <div class="interest-score" style="margin-top: 130px;">
                                         {{ $domainName === 'APTITUDE' ? 'TOTAL SCORE:' : 'AVERAGE SCORE:' }}
                                         {{ $section['average'] }}
                                     </div>
@@ -877,7 +878,7 @@
                                 </td>
 
                                 {{-- RIGHT COLUMN --}}
-                                <td width="320" valign="top" style="border: none;">
+                                <td width="330" valign="top" style="border: none;">
 
                                     <div class="interest-right">
 
