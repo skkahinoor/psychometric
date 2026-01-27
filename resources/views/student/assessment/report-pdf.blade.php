@@ -585,97 +585,105 @@
 
         /* ===== INTEREST CARDS (Image-2 EXACT STYLE) ===== */
 
-.interest-card {
-    display: flex;
-    gap: 18px;
-    margin-bottom: 18px;
-    align-items: flex-start;
-}
+        .interest-card {
+            display: flex;
+            flex-direction: row;
+            /* FORCE left-right */
+            gap: 16px;
+            margin-bottom: 18px;
+            align-items: flex-start;
+            width: 100%;
+        }
 
-/* LEFT COLUMN */
-.interest-left {
-    width: 200px;
-}
+        /* LEFT COLUMN */
+        .interest-left {
+            width: 220px;
+            /* MUST be smaller */
+            flex-shrink: 0;
+            /* prevent collapsing */
+        }
 
-/* TITLE BACKGROUND IMAGE BAR */
-.titlebackground {
-    position: relative;
-    width: 350px;
-    height: 100px;
+        /* TITLE BACKGROUND IMAGE BAR */
+        .titlebackground {
+            position: relative;
+            width: 220px;
+            /* 🔥 REDUCE from 350px */
+            height: 48px;
+            /* match design */
 
-    background-image: url('{{ asset('images/sectionbackground.png') }}'); /* <-- YOUR BAR IMAGE */
-    background-repeat: no-repeat;
-    background-size: 100% 100%;
-    background-position: left center;
+            background-image: url('{{ asset('images/sectionbackground.png') }}');
+            /* <-- YOUR BAR IMAGE */
+            background-repeat: no-repeat;
+            background-size: 100% 100%;
+            background-position: left center;
 
-    display: flex;
-    align-items: center;
-    padding-left: 48px;   /* space for circle */
-    margin-bottom: 80px;
-}
+            display: flex;
+            align-items: center;
+            padding-left: 42px;
+            margin-bottom: 6px;
+        }
 
-/* NUMBER CIRCLE */
-.titlebackground .interest-badge {
-    position: absolute;
-    left: -14px;
-    top: 50%;
-    transform: translateY(-50%);
+        /* NUMBER CIRCLE */
+        .titlebackground .interest-badge {
+            position: absolute;
+            left: -14px;
+            top: 50%;
+            transform: translateY(-50%);
 
-    width: 34px;
-    height: 34px;
-    border-radius: 50%;
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
 
-    /* background: #1e1b8a; */
-    color: #ffffff;
+            /* background: #1e1b8a; */
+            color: #ffffff;
 
-    display: flex;
-    align-items: center;
-    justify-content: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
 
-    font-size: 11px;
-    font-weight: 800;
-}
+            font-size: 11px;
+            font-weight: 800;
+        }
 
-/* TITLE TEXT ON BAR */
-.titlebackground .interest-title {
-    background: transparent !important;
-    color: #ffffff;
-    font-weight: 800;
-    font-size: 14px;
-    text-transform: uppercase;
-    padding: 0;
-}
+        /* TITLE TEXT ON BAR */
+        .titlebackground .interest-title {
+            background: transparent !important;
+            color: #ffffff;
+            font-weight: 800;
+            font-size: 14px;
+            text-transform: uppercase;
+            padding: 0;
+        }
 
-/* SCORE PILL */
-.interest-score {
-    margin-top: 6px;
+        /* SCORE PILL */
+        .interest-score {
+            margin-top: 0;          /* IMPORTANT */
     width: 140px;
-
     background: #38bdf8;
     color: #ffffff;
     font-size: 11px;
     font-weight: 700;
-
     padding: 6px 8px;
     border-radius: 4px;
     text-align: center;
-}
+    white-space: nowrap;
+        }
 
-/* RIGHT DESCRIPTION BOX */
-.interest-right {
-    flex: 1;
-    background: #dbeafe;
-    padding: 14px;
-    border-radius: 8px;
-    font-size: 12px;
-    line-height: 1.45;
-}
+        /* RIGHT DESCRIPTION BOX */
+        .interest-right {
+            flex: 1;
+            width: auto;
+            background: #dbeafe;
+            padding: 14px;
+            border-radius: 8px;
+            font-size: 12px;
+            line-height: 1.45;
+        }
 
-/* spacing inside right box */
-.interest-right > div {
-    margin-bottom: 4px;
-}
-
+        /* spacing inside right box */
+        .interest-right>div {
+            margin-bottom: 4px;
+        }
     </style>
     @php use Illuminate\Support\Str; @endphp
     @php $student = $student ?? auth()->user(); @endphp
@@ -843,39 +851,82 @@
                     </div>
                 @endif
 
-                {{-- new code --}} <div class="section-contaner">
+                {{-- new code --}}
+                <div class="section-contaner">
                     @foreach ($sections['cards'] ?? [] as $index => $section)
-                        <div class="interest-card"> {{-- LEFT COLUMN --}} <div class="interest-left">
-                                <div class="titlebackground">
-                                    <div class="interest-badge"> {{ str_pad($index + 1, 2, '0', STR_PAD_LEFT) }} </div>
-                                    <div class="interest-title"> {{ $section['section_name'] }} </div>
-                                </div>
-                                <div class="interest-score">
-                                    {{ $domainName === 'APTITUDE' ? 'TOTAL SCORE:' : 'AVERAGE SCORE:' }}
-                                    {{ $section['average'] }} </div>
-                            </div> {{-- RIGHT COLUMN --}} <div class="interest-right">
-                                <div> {!! strip_tags($section['section_description']) !!} </div>
-                                @if ($domainName === 'OCEAN')
-                                    <div><strong>{{ $section['label'] }}:</strong>
-                                        {{ $section['relevant_description'] }} </div>
-                                @elseif ($domainName === 'WORK VALUES')
-                                    @if ($section['label'] === 'Low')
-                                        <div><strong>Low:</strong> {{ $section['low'] }}</div>
-                                    @elseif ($section['label'] === 'Mid')
-                                        <div><strong>Mid:</strong> {{ $section['mid'] }}</div>
-                                    @elseif ($section['label'] === 'High')
-                                        <div><strong>High:</strong> {{ $section['high'] }}</div>
-                                    @endif
-                                @else
-                                    <div><strong>Key Traits:</strong> {{ $section['section_keytraits'] }}</div>
-                                    <div><strong>Enjoys:</strong> {{ $section['section_enjoys'] }}</div>
-                                    <div><strong>Ideal Environments:</strong>
-                                        {{ $section['section_idealenvironments'] }} </div>
-                                @endif
-                            </div>
-                        </div>
+                        <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:18px; border: none;">
+                            <tr>
+                                {{-- LEFT COLUMN --}}
+                                <td width="260" valign="top" style="padding-right:8px; border: none;">
+
+                                    <table cellpadding="0" cellspacing="0" width="100%" style="border:none;">
+                                        <tr>
+                                            {{-- TITLE BAR --}}
+                                            <td valign="middle" style="border:none;">
+
+                                                <div class="titlebackground">
+                                                    <div class="interest-badge">
+                                                        {{ str_pad($index + 1, 2, '0', STR_PAD_LEFT) }}
+                                                    </div>
+                                                    <div class="interest-title">
+                                                        {{ $section['section_name'] }}
+                                                    </div>
+                                                </div>
+
+                                            </td>
+
+                                            {{-- SCORE (RIGHT OF BAR) --}}
+                                            <td valign="middle" align="right" style="border:none; padding-left:6px;">
+
+                                                <div class="interest-score" style="margin-top:0;">
+                                                    {{ $domainName === 'APTITUDE' ? 'TOTAL SCORE:' : 'AVERAGE SCORE:' }}
+                                                    {{ $section['average'] }}
+                                                </div>
+
+                                            </td>
+                                        </tr>
+                                    </table>
+
+                                </td>
+
+
+                                {{-- RIGHT COLUMN --}}
+                                <td width="320" valign="top" style="border: none;">
+
+                                    <div class="interest-right">
+
+                                        <div>
+                                            {!! strip_tags($section['section_description']) !!}
+                                        </div>
+
+                                        @if ($domainName === 'OCEAN')
+                                            <div><strong>{{ $section['label'] }}:</strong>
+                                                {{ $section['relevant_description'] }}
+                                            </div>
+                                        @elseif ($domainName === 'WORK VALUES')
+                                            @if ($section['label'] === 'Low')
+                                                <div><strong>Low:</strong> {{ $section['low'] }}</div>
+                                            @elseif ($section['label'] === 'Mid')
+                                                <div><strong>Mid:</strong> {{ $section['mid'] }}</div>
+                                            @elseif ($section['label'] === 'High')
+                                                <div><strong>High:</strong> {{ $section['high'] }}</div>
+                                            @endif
+                                        @else
+                                            <div><strong>Key Traits:</strong> {{ $section['section_keytraits'] }}</div>
+                                            <div><strong>Enjoys:</strong> {{ $section['section_enjoys'] }}</div>
+                                            <div><strong>Ideal Environments:</strong>
+                                                {{ $section['section_idealenvironments'] }}
+                                            </div>
+                                        @endif
+
+                                    </div>
+
+                                </td>
+                            </tr>
+                        </table>
                     @endforeach
                 </div>
+
 
 
 
