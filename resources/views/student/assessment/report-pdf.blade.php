@@ -657,16 +657,17 @@
 
         /* SCORE PILL */
         .interest-score {
-            margin-top: 0;          /* IMPORTANT */
-    width: 140px;
-    background: #38bdf8;
-    color: #ffffff;
-    font-size: 11px;
-    font-weight: 700;
-    padding: 6px 8px;
-    border-radius: 4px;
-    text-align: center;
-    white-space: nowrap;
+            margin-top: 6px;
+            width: 140px;
+
+            background: #38bdf8;
+            color: #ffffff;
+            font-size: 11px;
+            font-weight: 700;
+
+            padding: 6px 8px;
+            border-radius: 4px;
+            text-align: center;
         }
 
         /* RIGHT DESCRIPTION BOX */
@@ -857,38 +858,23 @@
                         <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:18px; border: none;">
                             <tr>
                                 {{-- LEFT COLUMN --}}
-                                <td width="260" valign="top" style="padding-right:8px; border: none;">
+                                <td width="100" valign="top" style="padding-right:4px; border: none;">
 
-                                    <table cellpadding="0" cellspacing="0" width="100%" style="border:none;">
-                                        <tr>
-                                            {{-- TITLE BAR --}}
-                                            <td valign="middle" style="border:none;">
+                                    <div class="titlebackground">
+                                        <div class="interest-badge">
+                                            {{ str_pad($index + 1, 2, '0', STR_PAD_LEFT) }}
+                                        </div>
+                                        <div class="interest-title">
+                                            {{ $section['section_name'] }}
+                                        </div>
+                                    </div>
 
-                                                <div class="titlebackground">
-                                                    <div class="interest-badge">
-                                                        {{ str_pad($index + 1, 2, '0', STR_PAD_LEFT) }}
-                                                    </div>
-                                                    <div class="interest-title">
-                                                        {{ $section['section_name'] }}
-                                                    </div>
-                                                </div>
-
-                                            </td>
-
-                                            {{-- SCORE (RIGHT OF BAR) --}}
-                                            <td valign="middle" align="right" style="border:none; padding-left:6px;">
-
-                                                <div class="interest-score" style="margin-top:0;">
-                                                    {{ $domainName === 'APTITUDE' ? 'TOTAL SCORE:' : 'AVERAGE SCORE:' }}
-                                                    {{ $section['average'] }}
-                                                </div>
-
-                                            </td>
-                                        </tr>
-                                    </table>
+                                    <div class="interest-score">
+                                        {{ $domainName === 'APTITUDE' ? 'TOTAL SCORE:' : 'AVERAGE SCORE:' }}
+                                        {{ $section['average'] }}
+                                    </div>
 
                                 </td>
-
 
                                 {{-- RIGHT COLUMN --}}
                                 <td width="320" valign="top" style="border: none;">
