@@ -52,27 +52,43 @@
         }
 
         .h2-subbanner {
-            position: relative;
-            height: 60px;
-            width: auto;
-            /* BACKGROUND IMAGE */
+            height: 125px;
+            width: 600px;
+
             background-image: url('{{ asset('images/subtitlebanner.png') }}');
             background-repeat: no-repeat;
             background-position: left center;
             background-size: auto 100%;
 
-            /* TEXT COLOR */
-            color: #ffffff;
-
-            /* SPACE FOR TEXT */
-            padding-left: 70px;
-            padding-right: 20px;
-
             display: flex;
-            align-items: center;
+            align-items: left;
 
-            margin: 16px 0 0px 0;
+
+            margin: 0px 12px;
         }
+
+
+        .h2-subbanner .sub-text {
+            font-size: 14px;
+            font-weight: 600;
+            letter-spacing: 0.4px;
+            text-transform: uppercase;
+            color: #e0f2ff;
+            margin-bottom: 2px;
+            margin-top: 40px;
+            margin-left: 80px;
+        }
+
+        .h2-subbanner .main-text {
+            font-size: 18px;
+            font-weight: 800;
+            color: #000000;
+            line-height: 1.1;
+            margin-left: 80px;
+            text-transform: uppercase;
+        }
+
+
 
 
         .h2-banner .h2-title {
@@ -89,16 +105,7 @@
         }
 
 
-        /* .h2-banner::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            height: 2px;
-            background: #f97316;
-            z-index: 1;
-        } */
+
 
         h3 {
             font-size: 14px;
@@ -574,6 +581,101 @@
         .page-break {
             page-break-before: always;
         }
+
+
+        /* ===== INTEREST CARDS (Image-2 EXACT STYLE) ===== */
+
+.interest-card {
+    display: flex;
+    gap: 18px;
+    margin-bottom: 18px;
+    align-items: flex-start;
+}
+
+/* LEFT COLUMN */
+.interest-left {
+    width: 200px;
+}
+
+/* TITLE BACKGROUND IMAGE BAR */
+.titlebackground {
+    position: relative;
+    width: 350px;
+    height: 100px;
+
+    background-image: url('{{ asset('images/sectionbackground.png') }}'); /* <-- YOUR BAR IMAGE */
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+    background-position: left center;
+
+    display: flex;
+    align-items: center;
+    padding-left: 48px;   /* space for circle */
+    margin-bottom: 80px;
+}
+
+/* NUMBER CIRCLE */
+.titlebackground .interest-badge {
+    position: absolute;
+    left: -14px;
+    top: 50%;
+    transform: translateY(-50%);
+
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+
+    /* background: #1e1b8a; */
+    color: #ffffff;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-size: 11px;
+    font-weight: 800;
+}
+
+/* TITLE TEXT ON BAR */
+.titlebackground .interest-title {
+    background: transparent !important;
+    color: #ffffff;
+    font-weight: 800;
+    font-size: 14px;
+    text-transform: uppercase;
+    padding: 0;
+}
+
+/* SCORE PILL */
+.interest-score {
+    margin-top: 6px;
+    width: 140px;
+
+    background: #38bdf8;
+    color: #ffffff;
+    font-size: 11px;
+    font-weight: 700;
+
+    padding: 6px 8px;
+    border-radius: 4px;
+    text-align: center;
+}
+
+/* RIGHT DESCRIPTION BOX */
+.interest-right {
+    flex: 1;
+    background: #dbeafe;
+    padding: 14px;
+    border-radius: 8px;
+    font-size: 12px;
+    line-height: 1.45;
+}
+
+/* spacing inside right box */
+.interest-right > div {
+    margin-bottom: 4px;
+}
+
     </style>
     @php use Illuminate\Support\Str; @endphp
     @php $student = $student ?? auth()->user(); @endphp
@@ -722,44 +824,64 @@
 
             <div class="pdf-page">
                 @if ($domainDisplayName === 'INTEREST')
-                <div class="h2-subbanner">
-                    <p class="text-white">YOUR TOP 3 CAREER INTERESTS ARE</p>
-                    <h2 class="h2-title">Introduction</h2>
-                </div>
-            @endif
-                <div class="section-contaner">
-                    @foreach ($sections['cards'] ?? [] as $section)
-                        <div class="section">
-                            <img src="{{ asset($section['section_image']) }}"
-                                alt="{{ $section['section_name'] }} image" class="meta">
-                            <h3>{{ $section['section_name'] }} @if (isset($section['label']))
-                                    - {{ $section['label'] }}
-                                @endif
-                            </h3>
-                            <div class="meta">{{ $domainName === 'APTITUDE' ? 'Total Score:' : 'Average Score:' }}
-                                {{ $section['average'] }}</div>
-                            <div class="meta">{!! strip_tags($section['section_description']) !!}</div>
-                            @if ($domainName === 'OCEAN')
-                                <div class="meta"><strong>{{ $section['label'] }}:</strong>
-                                    {{ $section['relevant_description'] }}</div>
-                            @elseif ($domainName === 'WORK VALUES')
-                                @if ($section['label'] === 'Low')
-                                    <div class="meta"><strong>Low:</strong> {{ $section['low'] }}</div>
-                                @elseif ($section['label'] === 'Mid')
-                                    <div class="meta"><strong>Mid:</strong> {{ $section['mid'] }}</div>
-                                @elseif ($section['label'] === 'High')
-                                    <div class="meta"><strong>High:</strong> {{ $section['high'] }}</div>
-                                @endif
-                            @else
-                                <div class="meta"><strong>Key Traits:</strong> {{ $section['section_keytraits'] }}
+                    <div class="h2-subbanner">
+                        <div>
+                            @php
+                                $cards = collect($sections['cards'] ?? []);
+                                $count = $cards->count();
+                                $interestNames = $cards->pluck('section_name')->implode(', ');
+                            @endphp
+
+                            <div class="sub-text">
+                                YOUR TOP {{ $count }} CAREER INTEREST{{ $count > 1 ? 'S' : '' }} ARE
+                            </div>
+
+                            <div class="main-text">
+                                {{ $interestNames }}
+                            </div>
+                        </div>
+                    </div>
+                @endif
+
+                {{-- new code --}} <div class="section-contaner">
+                    @foreach ($sections['cards'] ?? [] as $index => $section)
+                        <div class="interest-card"> {{-- LEFT COLUMN --}} <div class="interest-left">
+                                <div class="titlebackground">
+                                    <div class="interest-badge"> {{ str_pad($index + 1, 2, '0', STR_PAD_LEFT) }} </div>
+                                    <div class="interest-title"> {{ $section['section_name'] }} </div>
                                 </div>
-                                <div class="meta"><strong>Enjoys:</strong> {{ $section['section_enjoys'] }}</div>
-                                <div class="meta"><strong>Ideal Environments:</strong>
-                                    {{ $section['section_idealenvironments'] }}</div>
-                            @endif
+                                <div class="interest-score">
+                                    {{ $domainName === 'APTITUDE' ? 'TOTAL SCORE:' : 'AVERAGE SCORE:' }}
+                                    {{ $section['average'] }} </div>
+                            </div> {{-- RIGHT COLUMN --}} <div class="interest-right">
+                                <div> {!! strip_tags($section['section_description']) !!} </div>
+                                @if ($domainName === 'OCEAN')
+                                    <div><strong>{{ $section['label'] }}:</strong>
+                                        {{ $section['relevant_description'] }} </div>
+                                @elseif ($domainName === 'WORK VALUES')
+                                    @if ($section['label'] === 'Low')
+                                        <div><strong>Low:</strong> {{ $section['low'] }}</div>
+                                    @elseif ($section['label'] === 'Mid')
+                                        <div><strong>Mid:</strong> {{ $section['mid'] }}</div>
+                                    @elseif ($section['label'] === 'High')
+                                        <div><strong>High:</strong> {{ $section['high'] }}</div>
+                                    @endif
+                                @else
+                                    <div><strong>Key Traits:</strong> {{ $section['section_keytraits'] }}</div>
+                                    <div><strong>Enjoys:</strong> {{ $section['section_enjoys'] }}</div>
+                                    <div><strong>Ideal Environments:</strong>
+                                        {{ $section['section_idealenvironments'] }} </div>
+                                @endif
+                            </div>
                         </div>
                     @endforeach
                 </div>
+
+
+
+
+
+
             </div>
 
             <div class="page-break"></div>
