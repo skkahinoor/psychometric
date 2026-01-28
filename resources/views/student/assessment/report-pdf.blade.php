@@ -862,15 +862,15 @@
                                 <td width="80" valign="top" style="border: none;">
 
                                     <div class="titlebackground">
-                                        <div class="interest-badge">
+                                        <div class="interest-badge" style="margin-top: 12px; margin-left: 46px; font-size: 11px;">
                                             {{ str_pad($index + 1, 2, '0', STR_PAD_LEFT) }}
                                         </div>
-                                        <div class="interest-title">
+                                        <div class="interest-title" style="margin-top: 23px; margin-left: 55px; font-size: 15px;">
                                             {{ $section['section_name'] }}
                                         </div>
                                     </div>
 
-                                    <div class="interest-score" style="margin-top: 130px;">
+                                    <div class="interest-score" style="margin-top: 130px; margin-left: 30px;">
                                         {{ $domainName === 'APTITUDE' ? 'TOTAL SCORE:' : 'AVERAGE SCORE:' }}
                                         {{ $section['average'] }}
                                     </div>
