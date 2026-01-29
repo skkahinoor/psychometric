@@ -658,21 +658,37 @@
         /* Suggested career path css  */
         .h2-banner-suggested-career {
             position: relative;
-            height: 70px;
-            width: 520px;
-            /* Match Canva pill width */
+            height: 90px;
+            /* Taller like Canva */
+            width: 530px;
+            /* Slightly wider */
 
             background-image: url('{{ asset('images/careerpath.png') }}');
             background-repeat: no-repeat;
             background-position: left center;
-            background-size: contain;
-            /* IMPORTANT */
+            background-size: 100% 100%;
+            /* FORCE exact pill shape */
 
-            display: flex;
-            align-items: center;
+            display: block;
+            /* PDF engines handle this better */
 
-            margin: 20px 0 20px 80px;
-            /* Match left offset like Canva */
+            margin: 20px 0 25px 80px;
+        }
+
+        .suggested-title-wrap {
+            position: absolute;
+            top: 70%;
+            left: 110px;
+            /* Push after circle */
+            transform: translateY(-50%);
+
+            font-size: 22px;
+            font-weight: 800;
+            color: #ffffff;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+
+            line-height: 1;
         }
     </style>
     @php use Illuminate\Support\Str; @endphp
@@ -915,11 +931,11 @@
                         $careerPathSections = $sections['cards'];
                     @endphp
                     <div class="h2-banner-suggested-career">
-                        <h2 class="h2-title" style="color: white; font-size: 18px; font-weight: 800; margin-top: 20px; text-transform: uppercase;">
+                        <div class="suggested-title-wrap">
                             Suggested Career Paths
-                        </h2>
-
+                        </div>
                     </div>
+
                     <div class="career-table">
                         <table>
                             <tbody>
