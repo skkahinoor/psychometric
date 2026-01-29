@@ -690,6 +690,74 @@
 
             line-height: 1;
         }
+
+        /* ===== Canva-style career paths UI (NO backend change) ===== */
+
+        .career-block {
+            margin-bottom: 18px;
+        }
+
+        .career-category {
+    position: relative;
+    width: 280px;              /* Adjust to match design */
+    height: 42px;
+
+    background-image: url('{{ asset('images/career-folder.png') }}');
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+    background-position: left center;
+
+    color: #ffffff;
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+
+    padding-left: 48px;       /* Push text after folder tab */
+    padding-top: 11px;
+
+    margin-bottom: 8px;
+}
+
+.career-category-title {
+    margin-top: 7px;
+    font-size: 14px;
+    margin-left: 55px;
+}
+
+
+        .career-grid {
+            display: table;
+            width: 100%;
+        }
+
+        .career-row {
+            display: table-row;
+        }
+
+        .career-cell {
+            display: table-cell;
+            width: 33.33%;
+            vertical-align: top;
+            padding: 4px 10px;
+            font-size: 12px;
+            color: #111827;
+        }
+
+        .career-item {
+            margin-bottom: 4px;
+            padding-left: 14px;
+            position: relative;
+            font-size: 13px;
+        }
+
+        .career-item:before {
+            content: "■";
+            position: absolute;
+            left: 0;
+            top: 1px;
+            font-size: 8px;
+            color: #38bdf8;
+        }
     </style>
     @php use Illuminate\Support\Str; @endphp
     @php $student = $student ?? auth()->user(); @endphp
@@ -936,7 +1004,7 @@
                         </div>
                     </div>
 
-                    <div class="career-table">
+                    {{-- <div class="career-table">
                         <table>
                             <tbody>
                                 @foreach ($careerPathSections as $sec)
@@ -949,7 +1017,6 @@
                                             ->values();
                                         $combinedCareers = collect();
                                         foreach ($paths as $p) {
-                                            // Ensure career categories are loaded before merging
                                             $careersWithCategories = $p->careers->load('careerCategory');
                                             $combinedCareers = $combinedCareers->merge($careersWithCategories);
                                         }
@@ -960,7 +1027,7 @@
                                             <td style="width: 30%">{{ $sec['section_name'] }}</td>
                                             <td>
                                                 @if ($combinedCareers->count() > 0)
-                                                    {{-- now merge and show single career cluster  --}}
+                                                    
                                                     @php
                                                         $uniqueCategories = $combinedCareers
                                                             ->pluck('careerCategory.name') // extract category names
@@ -972,7 +1039,7 @@
                                                     @foreach ($uniqueCategories as $categoryName)
                                                         {!! $categoryName !!}
                                                     @endforeach
-                                                    {{-- end merging  --}}
+                                                    
                                                 @else
                                                     <span class="meta">No careers assigned</span>
                                                 @endif
@@ -982,7 +1049,73 @@
                                 @endforeach
                             </tbody>
                         </table>
+                    </div> --}}
+
+
+                    {{-- new code  --}}
+                    <div class="career-table">
+
+                        @foreach ($careerPathSections as $sec)
+                            @php
+                                $sectionId = $sec['section_id'] ?? null;
+                                $paths = ($careerpaths[$sectionId] ?? collect())
+                                    ->filter(function ($p) {
+                                        return $p->sections && $p->sections->count() === 1;
+                                    })
+                                    ->values();
+                    
+                                $combinedCareers = collect();
+                                foreach ($paths as $p) {
+                                    // KEEP your exact merge logic
+                                    $careersWithCategories = $p->careers->load('careerCategory');
+                                    $combinedCareers = $combinedCareers->merge($careersWithCategories);
+                                }
+                                $combinedCareers = $combinedCareers->unique('id')->values();
+                    
+                                // KEEP your merged unique categories (DO NOT CHANGE)
+                                $uniqueCategories = $combinedCareers
+                                    ->pluck('careerCategory.name')
+                                    ->filter()
+                                    ->unique()
+                                    ->values();
+                    
+                                // UI ONLY — split into 3 columns
+                                $chunks = $uniqueCategories->chunk(
+                                    ceil($uniqueCategories->count() / 3)
+                                );
+                            @endphp
+                    
+                            @if ($uniqueCategories->count() > 0)
+                                <div class="career-block">
+                    
+                                    <!-- Blue category header (folder style) -->
+                                    <div class="career-category">
+                                        <div class="career-category-title">
+                                            {{ $sec['section_name'] }}
+                                        </div>
+                                    </div>
+                    
+                                    <!-- Canva-style 3-column layout (PDF safe) -->
+                                    <div class="career-grid">
+                                        <div class="career-row">
+                                            @foreach ($chunks as $col)
+                                                <div class="career-cell">
+                                                    @foreach ($col as $categoryName)
+                                                        <div class="career-item">
+                                                            {!! $categoryName !!}
+                                                        </div>
+                                                    @endforeach
+                                                </div>
+                                            @endforeach
+                                        </div>
+                                    </div>
+                    
+                                </div>
+                            @endif
+                        @endforeach
+                    
                     </div>
+                    
                 @endif
             </div>
 
@@ -1012,7 +1145,6 @@
                     </div>
                 @endif
             </div>
-
         @endforeach
     </div>
 
