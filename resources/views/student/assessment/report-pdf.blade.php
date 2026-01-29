@@ -9,6 +9,7 @@
         * {
             margin: 0;
             /* padding: 0; */
+
         }
 
         body {
@@ -416,33 +417,7 @@
             width: 100%;
         }
 
-        /* Main footer body */
-        /* .pdf-footer .footer-inner {
-            background: #ffffff;
-            height: 56px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            position: relative;
-            padding: 8px 16px;
-        }
 
-        .pdf-footer .footer-left,
-        .pdf-footer .footer-center,
-        .pdf-footer .footer-right {
-            font-size: 10px;
-            color: #4b5563;
-        }
-
-        .pdf-footer .footer-center {
-            text-align: center;
-            flex: 1;
-        }
-
-        .pdf-footer .footer-right {
-            text-align: right;
-            min-width: 80px;
-        } */
 
         .pdf-footer {
             position: fixed;
@@ -454,15 +429,7 @@
             background: #ffffff;
         }
 
-        /* .footer-top-stripe-1 {
-            height: 2px;
-            background: #9f1d1d;
-        }
 
-        .footer-top-stripe-2 {
-            height: 2px;
-            background: #f59e0b;
-        } */
 
         .footer-inner {
             padding: 10px 32px;
@@ -686,6 +653,27 @@
         .interest-right>div {
             margin-bottom: 4px;
         }
+
+
+        /* Suggested career path css  */
+        .h2-banner-suggested-career {
+            position: relative;
+            height: 70px;
+            width: 520px;
+            /* Match Canva pill width */
+
+            background-image: url('{{ asset('images/careerpath.png') }}');
+            background-repeat: no-repeat;
+            background-position: left center;
+            background-size: contain;
+            /* IMPORTANT */
+
+            display: flex;
+            align-items: center;
+
+            margin: 20px 0 20px 80px;
+            /* Match left offset like Canva */
+        }
     </style>
     @php use Illuminate\Support\Str; @endphp
     @php $student = $student ?? auth()->user(); @endphp
@@ -856,16 +844,18 @@
                 {{-- new code --}}
                 <div class="section-contaner">
                     @foreach ($sections['cards'] ?? [] as $index => $section)
-                        <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:8px; border: none;">
+                        <table width="100%" cellpadding="0" cellspacing="0">
                             <tr>
                                 {{-- LEFT COLUMN --}}
                                 <td width="80" valign="top" style="border: none;">
 
                                     <div class="titlebackground">
-                                        <div class="interest-badge" style="margin-top: 12px; margin-left: 46px; font-size: 11px;">
+                                        <div class="interest-badge"
+                                            style="margin-top: 12px; margin-left: 46px; font-size: 11px;">
                                             {{ str_pad($index + 1, 2, '0', STR_PAD_LEFT) }}
                                         </div>
-                                        <div class="interest-title" style="margin-top: 23px; margin-left: 55px; font-size: 15px;">
+                                        <div class="interest-title"
+                                            style="margin-top: 23px; margin-left: 55px; font-size: 15px;">
                                             {{ $section['section_name'] }}
                                         </div>
                                     </div>
@@ -913,24 +903,22 @@
                         </table>
                     @endforeach
                 </div>
-
-
-
-
-
-
-
             </div>
 
             <div class="page-break"></div>
+
+
 
             <div class="pdf-page careerpath-section">
                 @if (!empty($sections['cards']) && $domainName !== 'GOAL ORIENTATION')
                     @php
                         $careerPathSections = $sections['cards'];
                     @endphp
-                    <div class="h2-banner">
-                        <h2 class="h2-title">Suggested Career Paths</h2>
+                    <div class="h2-banner-suggested-career">
+                        <h2 class="h2-title" style="color: white; font-size: 18px; font-weight: 800; margin-top: 20px; text-transform: uppercase;">
+                            Suggested Career Paths
+                        </h2>
+
                     </div>
                     <div class="career-table">
                         <table>
@@ -956,12 +944,6 @@
                                             <td style="width: 30%">{{ $sec['section_name'] }}</td>
                                             <td>
                                                 @if ($combinedCareers->count() > 0)
-                                                    {{-- @foreach ($combinedCareers as $career)
-                                                        <span class="badge">
-                                                            {!! $career->name !!}
-                                                        </span>
-                                                    @endforeach --}}
-
                                                     {{-- now merge and show single career cluster  --}}
                                                     @php
                                                         $uniqueCategories = $combinedCareers
@@ -987,6 +969,7 @@
                     </div>
                 @endif
             </div>
+
 
             <div class="page-break"></div>
 
