@@ -698,31 +698,33 @@
         }
 
         .career-category {
-    position: relative;
-    width: 280px;              /* Adjust to match design */
-    height: 42px;
+            position: relative;
+            width: 280px;
+            /* Adjust to match design */
+            height: 42px;
 
-    background-image: url('{{ asset('images/career-folder.png') }}');
-    background-repeat: no-repeat;
-    background-size: 100% 100%;
-    background-position: left center;
+            background-image: url('{{ asset('images/career-folder.png') }}');
+            background-repeat: no-repeat;
+            background-size: 100% 100%;
+            background-position: left center;
 
-    color: #ffffff;
-    font-size: 12px;
-    font-weight: 700;
-    text-transform: uppercase;
+            color: #ffffff;
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
 
-    padding-left: 48px;       /* Push text after folder tab */
-    padding-top: 11px;
+            padding-left: 48px;
+            /* Push text after folder tab */
+            padding-top: 11px;
 
-    margin-bottom: 8px;
-}
+            margin-bottom: 8px;
+        }
 
-.career-category-title {
-    margin-top: 7px;
-    font-size: 14px;
-    margin-left: 55px;
-}
+        .career-category-title {
+            margin-top: 7px;
+            font-size: 14px;
+            margin-left: 55px;
+        }
 
 
         .career-grid {
@@ -757,6 +759,37 @@
             top: 1px;
             font-size: 8px;
             color: #38bdf8;
+        }
+
+        /* ===== Visual Score custom banner (Canva style) ===== */
+
+        .visual-score-banner {
+            position: relative;
+            width: 450px;
+            /* match Canva */
+            height: 100px;
+
+            background-image: url('{{ asset('images/visual-score-pill.png') }}');
+            background-repeat: no-repeat;
+            background-size: 100% 100%;
+            background-position: left center;
+
+            margin: 10px 0 25px 60px;
+            /* left indent like Canva */
+        }
+
+        .visual-score-title {
+            position: absolute;
+            top: 50%;
+            left: 75px;
+            /* after circle */
+            transform: translateY(-50%);
+
+            font-size: 15px;
+            font-weight: 800;
+            color: #ffffff;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
     </style>
     @php use Illuminate\Support\Str; @endphp
@@ -1063,7 +1096,7 @@
                                         return $p->sections && $p->sections->count() === 1;
                                     })
                                     ->values();
-                    
+
                                 $combinedCareers = collect();
                                 foreach ($paths as $p) {
                                     // KEEP your exact merge logic
@@ -1071,30 +1104,28 @@
                                     $combinedCareers = $combinedCareers->merge($careersWithCategories);
                                 }
                                 $combinedCareers = $combinedCareers->unique('id')->values();
-                    
+
                                 // KEEP your merged unique categories (DO NOT CHANGE)
                                 $uniqueCategories = $combinedCareers
                                     ->pluck('careerCategory.name')
                                     ->filter()
                                     ->unique()
                                     ->values();
-                    
+
                                 // UI ONLY — split into 3 columns
-                                $chunks = $uniqueCategories->chunk(
-                                    ceil($uniqueCategories->count() / 3)
-                                );
+                                $chunks = $uniqueCategories->chunk(ceil($uniqueCategories->count() / 3));
                             @endphp
-                    
+
                             @if ($uniqueCategories->count() > 0)
                                 <div class="career-block">
-                    
+
                                     <!-- Blue category header (folder style) -->
                                     <div class="career-category">
                                         <div class="career-category-title">
                                             {{ $sec['section_name'] }}
                                         </div>
                                     </div>
-                    
+
                                     <!-- Canva-style 3-column layout (PDF safe) -->
                                     <div class="career-grid">
                                         <div class="career-row">
@@ -1109,13 +1140,11 @@
                                             @endforeach
                                         </div>
                                     </div>
-                    
+
                                 </div>
                             @endif
                         @endforeach
-                    
                     </div>
-                    
                 @endif
             </div>
 
@@ -1125,8 +1154,10 @@
             {{-- Static bar chart (PDF-friendly, mirrors Result page data) --}}
             <div class="pdf-page careerpath-chart">
                 @if (!empty($sections['chart']))
-                    <div class="h2-banner">
-                        <h2 class="h2-title">Visual Representation of your Score</h2>
+                    <div class="visual-score-banner">
+                        <div class="visual-score-title">
+                            Visual Representation of Your Score
+                        </div>
                     </div>
                     <div class="career-chart">
                         @foreach ($sections['chart'] as $sec)
