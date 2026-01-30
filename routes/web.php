@@ -83,6 +83,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/assessment/result', [AssessmentController::class, 'result'])->name('assessment.result');
         Route::get('/assessment/report', [AssessmentController::class, 'report'])->name('assessment.report');
         Route::get('/assessment/report/pdf', [AssessmentController::class, 'reportPdf'])->name('assessment.report.pdf');
+
+
+        Route::get('/donut-chart/{userId}', [AssessmentController::class, 'generate']);
+
     });
 
     // Institute only routes

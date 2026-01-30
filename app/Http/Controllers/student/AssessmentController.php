@@ -500,6 +500,8 @@ class AssessmentController extends Controller
     public function reportPdf()
     {
         $user = Auth::user();
+        // 🔥🔥🔥 GENERATE DONUT IMAGE FIRST (VERY IMPORTANT)
+    file_get_contents(url('/donut-chart/' . $user->id));
         $data = $this->buildResultData($user->id);
         // Generate PDF using Dompdf directly
         $html = view('student.assessment.report-pdf', $data)->render();
@@ -523,5 +525,83 @@ class AssessmentController extends Controller
         // Render the same PDF blade but in browser; a query flag will trigger client-side PNG download
         $data['export_image'] = true;
         return view('student.assessment.report-pdf', $data);
+    }
+
+    public function generate($userId)
+    {
+        // 🔥 Example — REPLACE with your real chart data logic
+        $data = [
+            ['label' => 'Artistic', 'value' => 3.8],
+            ['label' => 'Realistic', 'value' => 3.6],
+            ['label' => 'Investigative', 'value' => 3.6],
+            ['label' => 'Social', 'value' => 3.6],
+            ['label' => 'Conventional', 'value' => 3.6],
+            ['label' => 'Enterprising', 'value' => 3.4],
+        ];
+
+        $size = 300;
+        $center = $size / 2;
+        $outerRadius = 130;
+        $innerRadius = 65;
+
+        $img = imagecreatetruecolor($size, $size);
+        imagesavealpha($img, true);
+        $transparent = imagecolorallocatealpha($img, 0, 0, 0, 127);
+        imagefill($img, 0, 0, $transparent);
+
+        // Canva-like colors
+        $colors = [
+            [250, 204, 21],   // yellow
+            [251, 146, 60],   // orange
+            [239, 68, 68],    // red
+            [236, 72, 153],   // pink
+            [168, 85, 247],   // purple
+            [99, 102, 241],   // blue
+        ];
+
+        $total = array_sum(array_column($data, 'value'));
+        $startAngle = 0;
+
+        foreach ($data as $i => $row) {
+            $angle = ($row['value'] / $total) * 360;
+
+            $colorArr = $colors[$i % count($colors)];
+            $color = imagecolorallocate($img, $colorArr[0], $colorArr[1], $colorArr[2]);
+
+            imagefilledarc(
+                $img,
+                $center,
+                $center,
+                $outerRadius * 2,
+                $outerRadius * 2,
+                $startAngle,
+                $startAngle + $angle,
+                $color,
+                IMG_ARC_PIE
+            );
+
+            $startAngle += $angle;
+        }
+
+        // Cut inner hole (donut)
+        $hole = imagecolorallocatealpha($img, 255, 255, 255, 0);
+        imagefilledellipse(
+            $img,
+            $center,
+            $center,
+            $innerRadius * 2,
+            $innerRadius * 2,
+            $hole
+        );
+
+        $path = public_path("temp/donut-{$userId}.png");
+        if (!file_exists(public_path('temp'))) {
+            mkdir(public_path('temp'), 0777, true);
+        }
+
+        imagepng($img, $path);
+        imagedestroy($img);
+
+        return response()->file($path);
     }
 }

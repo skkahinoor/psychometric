@@ -791,6 +791,40 @@
             text-transform: uppercase;
             letter-spacing: 0.5px;
         }
+
+        /* ===== Donut chart styles (PDF safe SVG) ===== */
+
+        .donut-wrap {
+            display: table;
+            width: 100%;
+            margin-top: 10px;
+        }
+
+        .donut-left {
+            display: table-cell;
+            width: 260px;
+            vertical-align: middle;
+            text-align: center;
+        }
+
+        .donut-right {
+            display: table-cell;
+            vertical-align: middle;
+            padding-left: 20px;
+        }
+
+        .donut-legend-item {
+            margin-bottom: 6px;
+            font-size: 12px;
+        }
+
+        .donut-dot {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            margin-right: 6px;
+        }
     </style>
     @php use Illuminate\Support\Str; @endphp
     @php $student = $student ?? auth()->user(); @endphp
@@ -1160,7 +1194,7 @@
                         </div>
                     </div>
                     <div class="career-chart">
-                        @foreach ($sections['chart'] as $sec)
+                        {{-- @foreach ($sections['chart'] as $sec)
                             @php
                                 $value = (float) ($sec['average_value'] ?? 0);
                                 $clamped = max(0, min(10, $value));
@@ -1172,7 +1206,58 @@
                                     <div class="barFill" style="width: {{ $percent }}%"></div>
                                 </div>
                             </div>
-                        @endforeach
+                        @endforeach --}}
+
+
+                        {{-- new code  --}}
+                        @php
+                        // Prepare values
+                        $total = collect($sections['chart'])->sum('average_value');
+                    
+                        // Fallback to avoid divide by zero
+                        if ($total <= 0) {
+                            $total = 1;
+                        }
+                    
+                        // Colors similar to Canva
+                        $colors = [
+                            '#facc15', // yellow
+                            '#fb923c', // orange
+                            '#ef4444', // red
+                            '#ec4899', // pink
+                            '#a855f7', // purple
+                            '#6366f1', // blue
+                        ];
+                    
+                        $radius = 70;
+                        $circumference = 2 * pi() * $radius;
+                    
+                        $offset = 0;
+                    @endphp
+                        <div class="donut-wrap">
+
+                            <div class="donut-left">
+                                <div style="text-align:center; margin: 20px 0;">
+                                    <img src="{{ asset('temp/donut-' . $student->id . '.png') }}"
+                                        style="width:220px; height:220px;">
+                                </div>
+                            </div>
+
+                            <div class="donut-right">
+                                @foreach ($sections['chart'] as $i => $sec)
+                                    @php
+                                        $color = $colors[$i % count($colors)];
+                                    @endphp
+                                    <div class="donut-legend-item">
+                                        <span class="donut-dot" style="background: {{ $color }};"></span>
+                                        {{ $sec['average_value'] }} {{ $sec['section_name'] }}
+                                    </div>
+                                @endforeach
+                            </div>
+
+                        </div>
+
+
                     </div>
                 @endif
             </div>
