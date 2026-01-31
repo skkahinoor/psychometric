@@ -355,6 +355,9 @@ class InstituteStudentController extends Controller
     {
         $student = User::findOrFail($userId);
 
+        // Generate donut image locally
+        $this->saveDonutChart($userId);
+
         // Build same data as report()
         $careerpaths = CareerPath::with(['sections', 'careers.careerCategory'])->get()->reduce(function ($carry, $path) {
             foreach ($path->sections as $section) {
@@ -484,5 +487,100 @@ class InstituteStudentController extends Controller
     public function destroy(string $id)
     {
         //
+    }
+
+    private function saveDonutChart($userId)
+    {
+        // Reuse logic from show/report to get data
+        $responses = DB::table('assessments')
+            ->join('sections', 'assessments.section_id', '=', 'sections.id')
+            ->join('domains', 'sections.domain_id', '=', 'domains.id')
+            ->select(
+                'sections.name as section_name',
+                'domains.name as domain_name',
+                DB::raw('SUM(response_value) as total'),
+                DB::raw('COUNT(*) as count')
+            )
+            ->where('assessments.student_id', $userId)
+            ->groupBy('sections.name', 'domains.name')
+            ->get();
+
+        $interestData = [];
+        foreach ($responses as $resp) {
+            if ($resp->domain_name === 'RIASEC') {
+                $interestData[] = [
+                    'label' => $resp->section_name,
+                    'value' => (float)round($resp->total / $resp->count, 2)
+                ];
+            }
+        }
+
+        // Sort by value descending to match legend
+        usort($interestData, function($a, $b) {
+            return $b['value'] <=> $a['value'];
+        });
+
+        // Fallback for empty data
+        if (empty($interestData)) {
+            $interestData = [
+                ['label' => 'Realistic', 'value' => 1],
+                ['label' => 'Investigative', 'value' => 1],
+                ['label' => 'Artistic', 'value' => 1],
+                ['label' => 'Social', 'value' => 1],
+                ['label' => 'Enterprising', 'value' => 1],
+                ['label' => 'Conventional', 'value' => 1],
+            ];
+        }
+
+        $size = 400; 
+        $center = $size / 2;
+        $outerRadius = 160;
+        $innerRadius = 90;
+
+        $img = imagecreatetruecolor($size, $size);
+        imagealphablending($img, false);
+        imagesavealpha($img, true);
+        $transparent = imagecolorallocatealpha($img, 0, 0, 0, 127);
+        imagefill($img, 0, 0, $transparent);
+        imagealphablending($img, true);
+
+        $colors = [
+            [250, 204, 21],   // yellow
+            [251, 146, 60],   // orange
+            [239, 68, 68],    // red
+            [236, 72, 153],   // pink
+            [168, 85, 247],   // purple
+            [99, 102, 241],   // blue
+        ];
+
+        $totalValue = array_sum(array_column($interestData, 'value'));
+        if ($totalValue <= 0) $totalValue = 1;
+        
+        $startAngle = -90;
+
+        foreach ($interestData as $i => $row) {
+            $angle = ($row['value'] / $totalValue) * 360;
+            if ($angle <= 0) continue; 
+
+            $colorArr = $colors[$i % count($colors)];
+            $color = imagecolorallocate($img, $colorArr[0], $colorArr[1], $colorArr[2]);
+
+            imagefilledarc($img, $center, $center, $outerRadius * 2, $outerRadius * 2, $startAngle, $startAngle + $angle, $color, IMG_ARC_PIE);
+            $startAngle += $angle;
+        }
+
+        imagealphablending($img, false);
+        $hole = imagecolorallocatealpha($img, 0, 0, 0, 127);
+        imagefilledellipse($img, $center, $center, $innerRadius * 2, $innerRadius * 2, $hole);
+
+        $path = public_path("temp/donut-{$userId}.png");
+        if (!file_exists(public_path('temp'))) {
+            mkdir(public_path('temp'), 0777, true);
+        }
+
+        imagepng($img, $path);
+        imagedestroy($img);
+
+        return $path;
     }
 }

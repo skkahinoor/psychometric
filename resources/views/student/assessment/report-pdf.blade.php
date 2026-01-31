@@ -1194,70 +1194,66 @@
                         </div>
                     </div>
                     <div class="career-chart">
-                        {{-- @foreach ($sections['chart'] as $sec)
+
+                        @if ($domainDisplayName === 'INTEREST')
+                            {{-- new code  --}}
                             @php
-                                $value = (float) ($sec['average_value'] ?? 0);
-                                $clamped = max(0, min(10, $value));
-                                $percent = $clamped * 10; // 0-100
+                                // Prepare total for percentage if needed, though we'll show raw average as requested
+                                $total = collect($sections['chart'])->sum('average_value');
+
+                                // Fallback to avoid divide by zero
+                                if ($total <= 0) {
+                                    $total = 1;
+                                }
+
+                                // Colors similar to Canva (matching AssessmentController)
+                                $colors = [
+                                    '#facc15', // yellow
+                                    '#fb923c', // orange
+                                    '#ef4444', // red
+                                    '#ec4899', // pink
+                                    '#a855f7', // purple
+                                    '#6366f1', // blue
+                                ];
                             @endphp
-                            <div class="barRow">
-                                <div class="barLabel">{{ $sec['section_name'] }} ({{ $value }})</div>
-                                <div class="barTrack">
-                                    <div class="barFill" style="width: {{ $percent }}%"></div>
-                                </div>
-                            </div>
-                        @endforeach --}}
+                            <div class="donut-wrap">
 
-
-                        {{-- new code  --}}
-                        @php
-                        // Prepare values
-                        $total = collect($sections['chart'])->sum('average_value');
-                    
-                        // Fallback to avoid divide by zero
-                        if ($total <= 0) {
-                            $total = 1;
-                        }
-                    
-                        // Colors similar to Canva
-                        $colors = [
-                            '#facc15', // yellow
-                            '#fb923c', // orange
-                            '#ef4444', // red
-                            '#ec4899', // pink
-                            '#a855f7', // purple
-                            '#6366f1', // blue
-                        ];
-                    
-                        $radius = 70;
-                        $circumference = 2 * pi() * $radius;
-                    
-                        $offset = 0;
-                    @endphp
-                        <div class="donut-wrap">
-
-                            <div class="donut-left">
-                                <div style="text-align:center; margin: 20px 0;">
-                                    <img src="{{ asset('temp/donut-' . $student->id . '.png') }}"
-                                        style="width:220px; height:220px;">
-                                </div>
-                            </div>
-
-                            <div class="donut-right">
-                                @foreach ($sections['chart'] as $i => $sec)
-                                    @php
-                                        $color = $colors[$i % count($colors)];
-                                    @endphp
-                                    <div class="donut-legend-item">
-                                        <span class="donut-dot" style="background: {{ $color }};"></span>
-                                        {{ $sec['average_value'] }} {{ $sec['section_name'] }}
+                                <div class="donut-left">
+                                    <div style="text-align:center; margin: 20px 0;">
+                                        <img src="{{ asset('temp/donut-' . $student->id . '.png') }}"
+                                            style="width:320px; height:320px;">
                                     </div>
-                                @endforeach
+                                </div>
+
+                                <div class="donut-right">
+                                    @foreach ($sections['chart'] as $i => $sec)
+                                        @php
+                                            $color = $colors[$i % count($colors)];
+                                        @endphp
+                                        <div class="donut-legend-item" style="font-size: 16px; margin-bottom: 8px;">
+                                            <span class="donut-dot" style="background: {{ $color }}; width:12px; height:12px;"></span>
+                                            <span style="font-weight: 800; color: #333;">{{ $sec['average_value'] }}</span>
+                                            <span>{{ $sec['section_name'] }}</span>
+                                        </div>
+                                    @endforeach
+                                </div>
+
                             </div>
-
-                        </div>
-
-
+                        @else
+                            @foreach ($sections['chart'] as $sec)
+                                @php
+                                    $value = (float) ($sec['average_value'] ?? 0);
+                                    $clamped = max(0, min(10, $value));
+                                    $percent = $clamped * 10; // 0-100
+                                @endphp
+                                <div class="barRow">
+                                    <div class="barLabel">{{ $sec['section_name'] }} ({{ $value }})</div>
+                                    <div class="barTrack">
+                                        <div class="barFill" style="width: {{ $percent }}%"></div>
+                                    </div>
+                                </div>
+                            @endforeach
+                        @endif
                     </div>
                 @endif
             </div>
@@ -1303,9 +1299,7 @@
                     })
                     ->filter()
                     ->countBy()
-                    // ->filter(function ($count) {
-                    //     return $count > 1;
-                    // })
+
                     ->sortDesc();
 
                 if ($counts->isNotEmpty()) {

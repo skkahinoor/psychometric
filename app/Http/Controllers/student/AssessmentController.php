@@ -500,8 +500,9 @@ class AssessmentController extends Controller
     public function reportPdf()
     {
         $user = Auth::user();
-        // 🔥🔥🔥 GENERATE DONUT IMAGE FIRST (VERY IMPORTANT)
-    file_get_contents(url('/donut-chart/' . $user->id));
+        // Generate donut image locally
+        $this->saveDonutChart($user->id);
+        
         $data = $this->buildResultData($user->id);
         // Generate PDF using Dompdf directly
         $html = view('student.assessment.report-pdf', $data)->render();
@@ -529,25 +530,52 @@ class AssessmentController extends Controller
 
     public function generate($userId)
     {
-        // 🔥 Example — REPLACE with your real chart data logic
-        $data = [
-            ['label' => 'Artistic', 'value' => 3.8],
-            ['label' => 'Realistic', 'value' => 3.6],
-            ['label' => 'Investigative', 'value' => 3.6],
-            ['label' => 'Social', 'value' => 3.6],
-            ['label' => 'Conventional', 'value' => 3.6],
-            ['label' => 'Enterprising', 'value' => 3.4],
-        ];
+        $path = $this->saveDonutChart($userId);
+        return response()->file($path);
+    }
 
-        $size = 300;
+    private function saveDonutChart($userId)
+    {
+        $resultData = $this->buildResultData($userId);
+        $groupedResults = $resultData['groupedResults'] ?? [];
+        
+        // Find RIASEC domain (display_name INTEREST)
+        $interestDomain = $groupedResults['RIASEC'] ?? null;
+        $interestData = $interestDomain['chart'] ?? [];
+
+        $data = [];
+        foreach ($interestData as $sec) {
+            $data[] = [
+                'label' => $sec['section_name'],
+                'value' => (float)($sec['average_value'] ?? 0)
+            ];
+        }
+
+        // Fallback for empty data
+        if (empty($data)) {
+            $data = [
+                ['label' => 'Realistic', 'value' => 1],
+                ['label' => 'Investigative', 'value' => 1],
+                ['label' => 'Artistic', 'value' => 1],
+                ['label' => 'Social', 'value' => 1],
+                ['label' => 'Enterprising', 'value' => 1],
+                ['label' => 'Conventional', 'value' => 1],
+            ];
+        }
+
+        $size = 400; // Increased size for better quality
         $center = $size / 2;
-        $outerRadius = 130;
-        $innerRadius = 65;
+        $outerRadius = 160;
+        $innerRadius = 90;
 
         $img = imagecreatetruecolor($size, $size);
+        
+        // Enable transparency
+        imagealphablending($img, false);
         imagesavealpha($img, true);
         $transparent = imagecolorallocatealpha($img, 0, 0, 0, 127);
         imagefill($img, 0, 0, $transparent);
+        imagealphablending($img, true);
 
         // Canva-like colors
         $colors = [
@@ -559,11 +587,17 @@ class AssessmentController extends Controller
             [99, 102, 241],   // blue
         ];
 
-        $total = array_sum(array_column($data, 'value'));
-        $startAngle = 0;
+        $totalValue = array_sum(array_column($data, 'value'));
+        if ($totalValue <= 0) {
+            $totalValue = 1;
+        }
+        
+        // Start from top (-90 degrees)
+        $startAngle = -90;
 
         foreach ($data as $i => $row) {
-            $angle = ($row['value'] / $total) * 360;
+            $angle = ($row['value'] / $totalValue) * 360;
+            if ($angle <= 0) continue; 
 
             $colorArr = $colors[$i % count($colors)];
             $color = imagecolorallocate($img, $colorArr[0], $colorArr[1], $colorArr[2]);
@@ -583,8 +617,9 @@ class AssessmentController extends Controller
             $startAngle += $angle;
         }
 
-        // Cut inner hole (donut)
-        $hole = imagecolorallocatealpha($img, 255, 255, 255, 0);
+        // Create the donut hole (transparent)
+        imagealphablending($img, false);
+        $hole = imagecolorallocatealpha($img, 0, 0, 0, 127);
         imagefilledellipse(
             $img,
             $center,
@@ -602,6 +637,6 @@ class AssessmentController extends Controller
         imagepng($img, $path);
         imagedestroy($img);
 
-        return response()->file($path);
+        return $path;
     }
 }
