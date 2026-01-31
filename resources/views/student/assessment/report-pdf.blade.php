@@ -34,7 +34,7 @@
             height: 52px;
 
             /* BACKGROUND IMAGE */
-            background-image: url('{{ asset('images/h2-bg.png') }}');
+            /* background-image: url('{{ asset('images/h2-bg.png') }}'); */
             background-repeat: no-repeat;
             background-position: left center;
             background-size: auto 100%;
@@ -578,7 +578,7 @@
             height: 60px;
             /* match design */
 
-            background-image: url('{{ asset('images/sectionbackground.png') }}');
+            /* background-image: url('{{ asset('images/sectionbackground.png') }}'); */
             /* <-- YOUR BAR IMAGE */
             background-repeat: no-repeat;
             background-size: 100% 100%;
@@ -628,7 +628,7 @@
             margin-top: 6px;
             width: 140px;
 
-            background: #38bdf8;
+            /* background: #38bdf8; */
             color: #ffffff;
             font-size: 11px;
             font-weight: 700;
@@ -642,7 +642,7 @@
         .interest-right {
             flex: 1;
             width: auto;
-            background: #dbeafe;
+            /* background: #38b6ff; */
             padding: 14px;
             border-radius: 8px;
             font-size: 12px;
@@ -825,6 +825,8 @@
             border-radius: 50%;
             margin-right: 6px;
         }
+
+        /* For PERSONALITY domain  */
     </style>
     @php use Illuminate\Support\Str; @endphp
     @php $student = $student ?? auth()->user(); @endphp
@@ -919,7 +921,7 @@
 
     {{-- Introduction start page  --}}
     <div class="pdf-page">
-        <div class="h2-banner">
+        <div class="h2-banner" style=" background-image: url('{{ asset('images/h2-bg.png') }}') !important;">
             <h2 class="h2-title">Introduction</h2>
         </div>
 
@@ -949,9 +951,23 @@
                     $slug = Str::slug($domainName);
                     $domainDisplayName = $sections['cards'][0]['domain_display_name'] ?? $domainName;
                 @endphp
-                <div class="h2-banner">
-                    <h2 class="h2-title">{{ $domainDisplayName }}</h2>
-                </div>
+
+                @if ($domainDisplayName === 'INTEREST' && $domainDisplayName === 'LEARNING STYLE')
+                    <div class="h2-banner"
+                        style=" background-image: url('{{ asset('images/h2-bg.png') }}') !important;">
+                        <h2 class="h2-title">{{ $domainDisplayName }}</h2>
+                    </div>
+                @elseif ($domainDisplayName === 'PERSONALITY')
+                    <div class="h2-banner"
+                        style=" background-image: url('{{ asset('images/h2-green.png') }}') !important;">
+                        <h2 class="h2-title">{{ $domainDisplayName }}</h2>
+                    </div>
+                @else
+                    <div class="h2-banner"
+                        style=" background-image: url('{{ asset('images/h2-bg.png') }}') !important;">
+                        <h2 class="h2-title">{{ $domainDisplayName }}</h2>
+                    </div>
+                @endif
 
                 <div class="meta">
                     @if (isset($sections['description']) && $sections['description'])
@@ -963,6 +979,12 @@
                         <!-- CENTRAL IMAGE -->
                         <div class="intro-image-wrap">
                             <img src="{{ asset('images/domainriasec.png') }}" style="height: 530px; width: 530px;"
+                                alt="Psychometric Domains">
+                        </div>
+                    @elseif ($domainDisplayName === 'PERSONALITY')
+                        <!-- CENTRAL IMAGE -->
+                        <div class="intro-image-wrap">
+                            <img src="{{ asset('images/PERSONALITY.png') }}" style="height: 430px; width: 430px;"
                                 alt="Psychometric Domains">
                         </div>
                     @endif
@@ -997,59 +1019,172 @@
                     @foreach ($sections['cards'] ?? [] as $index => $section)
                         <table width="100%" cellpadding="0" cellspacing="0">
                             <tr>
-                                {{-- LEFT COLUMN --}}
-                                <td width="80" valign="top" style="border: none;">
 
-                                    <div class="titlebackground">
-                                        <div class="interest-badge"
-                                            style="margin-top: 12px; margin-left: 46px; font-size: 11px;">
-                                            {{ str_pad($index + 1, 2, '0', STR_PAD_LEFT) }}
-                                        </div>
-                                        <div class="interest-title"
-                                            style="margin-top: 23px; margin-left: 55px; font-size: 15px;">
-                                            {{ $section['section_name'] }}
-                                        </div>
-                                    </div>
-
-                                    <div class="interest-score" style="margin-top: 130px; margin-left: 30px;">
-                                        {{ $domainName === 'APTITUDE' ? 'TOTAL SCORE:' : 'AVERAGE SCORE:' }}
-                                        {{ $section['average'] }}
-                                    </div>
-
-                                </td>
-
-                                {{-- RIGHT COLUMN --}}
-                                <td width="330" valign="top" style="border: none;">
-
-                                    <div class="interest-right">
-
-                                        <div>
-                                            {!! strip_tags($section['section_description']) !!}
-                                        </div>
-
-                                        @if ($domainName === 'OCEAN')
-                                            <div><strong>{{ $section['label'] }}:</strong>
-                                                {{ $section['relevant_description'] }}
+                                @if ($domainDisplayName === 'INTEREST' && $domainDisplayName === 'LEARNING STYLE')
+                                    {{-- LEFT COLUMN --}}
+                                    <td width="80" valign="top" style="border: none;">
+                                        {{-- @if ($domainDisplayName === 'INTEREST' && $domainDisplayName === 'LEARNING STYLE') --}}
+                                        <div class="titlebackground"
+                                            style="background-image: url('{{ asset('images/sectionbackground.png') }}') !important;">
+                                            <div class="interest-badge"
+                                                style="margin-top: 12px; margin-left: 46px; font-size: 11px;">
+                                                {{ str_pad($index + 1, 2, '0', STR_PAD_LEFT) }}
                                             </div>
-                                        @elseif ($domainName === 'WORK VALUES')
-                                            @if ($section['label'] === 'Low')
-                                                <div><strong>Low:</strong> {{ $section['low'] }}</div>
-                                            @elseif ($section['label'] === 'Mid')
-                                                <div><strong>Mid:</strong> {{ $section['mid'] }}</div>
-                                            @elseif ($section['label'] === 'High')
-                                                <div><strong>High:</strong> {{ $section['high'] }}</div>
+                                            <div class="interest-title"
+                                                style="margin-top: 23px; margin-left: 55px; font-size: 15px;">
+                                                {{ $section['section_name'] }}
+                                            </div>
+                                        </div>
+
+                                        <div class="interest-score"
+                                            style="margin-top: 130px; margin-left: 30px;background: #38bdf8;">
+                                            {{ $domainName === 'APTITUDE' ? 'TOTAL SCORE:' : 'AVERAGE SCORE:' }}
+                                            {{ $section['average'] }}
+                                        </div>
+
+                                    </td>
+
+                                    {{-- RIGHT COLUMN --}}
+                                    <td width="330" valign="top" style="border: none;">
+
+                                        <div class="interest-right" style="background: #38b6ff;">
+
+                                            <div>
+                                                {!! strip_tags($section['section_description']) !!}
+                                            </div>
+
+                                            @if ($domainName === 'OCEAN')
+                                                <div><strong>{{ $section['label'] }}:</strong>
+                                                    {{ $section['relevant_description'] }}
+                                                </div>
+                                            @elseif ($domainName === 'WORK VALUES')
+                                                @if ($section['label'] === 'Low')
+                                                    <div><strong>Low:</strong> {{ $section['low'] }}</div>
+                                                @elseif ($section['label'] === 'Mid')
+                                                    <div><strong>Mid:</strong> {{ $section['mid'] }}</div>
+                                                @elseif ($section['label'] === 'High')
+                                                    <div><strong>High:</strong> {{ $section['high'] }}</div>
+                                                @endif
+                                            @else
+                                                <div><strong>Key Traits:</strong> {{ $section['section_keytraits'] }}
+                                                </div>
+                                                <div><strong>Enjoys:</strong> {{ $section['section_enjoys'] }}</div>
+                                                <div><strong>Ideal Environments:</strong>
+                                                    {{ $section['section_idealenvironments'] }}
+                                                </div>
                                             @endif
-                                        @else
-                                            <div><strong>Key Traits:</strong> {{ $section['section_keytraits'] }}</div>
-                                            <div><strong>Enjoys:</strong> {{ $section['section_enjoys'] }}</div>
-                                            <div><strong>Ideal Environments:</strong>
-                                                {{ $section['section_idealenvironments'] }}
+
+                                        </div>
+
+                                    </td>
+                                @elseif ($domainDisplayName === 'PERSONALITY')
+                                    {{-- LEFT COLUMN --}}
+                                    <td width="80" valign="top" style="border: none;">
+                                        <div class="titlebackground"
+                                            style="background-image: url('{{ asset('images/sectionbackground-green.png') }}') !important;">
+                                            <div class="interest-badge"
+                                                style="margin-top: 12px; margin-left: 46px; font-size: 11px;">
+                                                {{ str_pad($index + 1, 2, '0', STR_PAD_LEFT) }}
                                             </div>
-                                        @endif
+                                            <div class="interest-title"
+                                                style="margin-top: 23px; margin-left: 55px; font-size: 15px;">
+                                                {{ $section['section_name'] }}
+                                            </div>
+                                        </div>
 
-                                    </div>
+                                        <div class="interest-score"
+                                            style="margin-top: 130px; margin-left: 30px; background: #24a401;">
+                                            {{ $domainName === 'APTITUDE' ? 'TOTAL SCORE:' : 'AVERAGE SCORE:' }}
+                                            {{ $section['average'] }}
+                                        </div>
 
-                                </td>
+                                    </td>
+
+                                    {{-- RIGHT COLUMN --}}
+                                    <td width="330" valign="top" style="border: none;">
+                                        <div class="interest-right" style="background: #24a401;">
+                                            {{ $domainName === 'APTITUDE' ? 'TOTAL SCORE:' : 'AVERAGE SCORE:' }}
+                                            {{ $section['average'] }}
+                                            <div>
+                                                {!! strip_tags($section['section_description']) !!}
+                                            </div>
+
+                                            @if ($domainName === 'OCEAN')
+                                                <div><strong>{{ $section['label'] }}:</strong>
+                                                    {{ $section['relevant_description'] }}
+                                                </div>
+                                            @elseif ($domainName === 'WORK VALUES')
+                                                @if ($section['label'] === 'Low')
+                                                    <div><strong>Low:</strong> {{ $section['low'] }}</div>
+                                                @elseif ($section['label'] === 'Mid')
+                                                    <div><strong>Mid:</strong> {{ $section['mid'] }}</div>
+                                                @elseif ($section['label'] === 'High')
+                                                    <div><strong>High:</strong> {{ $section['high'] }}</div>
+                                                @endif
+                                            @else
+                                                <div><strong>Key Traits:</strong> {{ $section['section_keytraits'] }}
+                                                </div>
+                                                <div><strong>Enjoys:</strong> {{ $section['section_enjoys'] }}</div>
+                                                <div><strong>Ideal Environments:</strong>
+                                                    {{ $section['section_idealenvironments'] }}
+                                                </div>
+                                            @endif
+
+                                        </div>
+
+                                    </td>
+                                @else
+                                    {{-- LEFT COLUMN --}}
+                                    <td width="80" valign="top" style="border: none;">
+                                        <div class="titlebackground"
+                                            style="background-image: url('{{ asset('images/sectionbackground.png') }}') !important;">
+                                            <div class="interest-badge"
+                                                style="margin-top: 12px; margin-left: 46px; font-size: 11px;">
+                                                {{ str_pad($index + 1, 2, '0', STR_PAD_LEFT) }}
+                                            </div>
+                                            <div class="interest-title"
+                                                style="margin-top: 23px; margin-left: 55px; font-size: 15px;">
+                                                {{ $section['section_name'] }}
+                                            </div>
+                                        </div>
+
+                                        <div class="interest-score"
+                                            style="margin-top: 130px; margin-left: 30px;background: #38bdf8;">
+                                            {{ $domainName === 'APTITUDE' ? 'TOTAL SCORE:' : 'AVERAGE SCORE:' }}
+                                            {{ $section['average'] }}
+                                        </div>
+
+                                    </td>
+
+                                    {{-- RIGHT COLUMN --}}
+                                    <td width="330" valign="top" style="border: none;">
+                                        <div class="interest-right" style="background: #38b6ff;">
+                                            <div>
+                                                {!! strip_tags($section['section_description']) !!}
+                                            </div>
+                                            @if ($domainName === 'OCEAN')
+                                                <div><strong>{{ $section['label'] }}:</strong>
+                                                    {{ $section['relevant_description'] }}
+                                                </div>
+                                            @elseif ($domainName === 'WORK VALUES')
+                                                @if ($section['label'] === 'Low')
+                                                    <div><strong>Low:</strong> {{ $section['low'] }}</div>
+                                                @elseif ($section['label'] === 'Mid')
+                                                    <div><strong>Mid:</strong> {{ $section['mid'] }}</div>
+                                                @elseif ($section['label'] === 'High')
+                                                    <div><strong>High:</strong> {{ $section['high'] }}</div>
+                                                @endif
+                                            @else
+                                                <div><strong>Key Traits:</strong> {{ $section['section_keytraits'] }}
+                                                </div>
+                                                <div><strong>Enjoys:</strong> {{ $section['section_enjoys'] }}</div>
+                                                <div><strong>Ideal Environments:</strong>
+                                                    {{ $section['section_idealenvironments'] }}
+                                                </div>
+                                            @endif
+                                        </div>
+                                    </td>
+                                @endif
                             </tr>
                         </table>
                     @endforeach
@@ -1199,21 +1334,21 @@
                             {{-- new code  --}}
                             @php
                                 // Prepare total for percentage if needed, though we'll show raw average as requested
-                                $total = collect($sections['chart'])->sum('average_value');
+$total = collect($sections['chart'])->sum('average_value');
 
-                                // Fallback to avoid divide by zero
-                                if ($total <= 0) {
-                                    $total = 1;
-                                }
+// Fallback to avoid divide by zero
+if ($total <= 0) {
+    $total = 1;
+}
 
-                                // Colors similar to Canva (matching AssessmentController)
-                                $colors = [
-                                    '#facc15', // yellow
-                                    '#fb923c', // orange
-                                    '#ef4444', // red
-                                    '#ec4899', // pink
-                                    '#a855f7', // purple
-                                    '#6366f1', // blue
+// Colors similar to Canva (matching AssessmentController)
+$colors = [
+    '#facc15', // yellow
+    '#fb923c', // orange
+    '#ef4444', // red
+    '#ec4899', // pink
+    '#a855f7', // purple
+    '#6366f1', // blue
                                 ];
                             @endphp
                             <div class="donut-wrap">
@@ -1230,9 +1365,12 @@
                                         @php
                                             $color = $colors[$i % count($colors)];
                                         @endphp
-                                        <div class="donut-legend-item" style="font-size: 16px; margin-bottom: 8px;">
-                                            <span class="donut-dot" style="background: {{ $color }}; width:12px; height:12px;"></span>
-                                            <span style="font-weight: 800; color: #333;">{{ $sec['average_value'] }}</span>
+                                        <div class="donut-legend-item"
+                                            style="font-size: 16px; margin-bottom: 8px; line-height: 50px;">
+                                            <span class="donut-dot"
+                                                style="background: {{ $color }}; width:12px; height:12px;"></span>
+                                            <span
+                                                style="font-weight: 800; color: #333;">{{ $sec['average_value'] }}</span>
                                             <span>{{ $sec['section_name'] }}</span>
                                         </div>
                                     @endforeach
