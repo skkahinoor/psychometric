@@ -967,6 +967,11 @@
                         style=" background-image: url('{{ asset('images/h2-yellow.png') }}') !important;">
                         <h2 class="h2-title" style="font-size: 13px !important;">{{ $domainDisplayName }}</h2>
                     </div>
+                @elseif ($domainDisplayName === 'APTITUDE')
+                    <div class="h2-banner"
+                        style=" background-image: url('{{ asset('images/h2-red.png') }}') !important;">
+                        <h2 class="h2-title">{{ $domainDisplayName }}</h2>
+                    </div>
                 @else
                     <div class="h2-banner"
                         style=" background-image: url('{{ asset('images/h2-bg.png') }}') !important;">
@@ -990,6 +995,12 @@
                         <!-- CENTRAL IMAGE -->
                         <div class="intro-image-wrap">
                             <img src="{{ asset('images/PERSONALITY.png') }}" style="height: 430px; width: 430px;"
+                                alt="Psychometric Domains">
+                        </div>
+                    @elseif ($domainDisplayName === 'APTITUDE')
+                        <!-- CENTRAL IMAGE -->
+                        <div class="intro-image-wrap">
+                            <img src="{{ asset('images/Aptitude.png') }}" style="height: 190px; width: 650px;"
                                 alt="Psychometric Domains">
                         </div>
                     @endif
