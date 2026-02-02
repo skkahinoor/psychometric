@@ -1356,23 +1356,26 @@
             <div class="pdf-page careerpath-chart">
                 @if (!empty($sections['chart']))
                     @if ($domainDisplayName === 'INTEREST' && $domainDisplayName === 'LEARNING STYLE')
-                    <div class="visual-score-banner" style=" background-image: url('{{ asset('images/visual-score-pill.png') }}') !important;">
-                        <div class="visual-score-title">
-                            Visual Representation of Your Score
+                        <div class="visual-score-banner"
+                            style=" background-image: url('{{ asset('images/visual-score-pill.png') }}') !important;">
+                            <div class="visual-score-title">
+                                Visual Representation of Your Score
+                            </div>
                         </div>
-                    </div>
                     @elseif ($domainDisplayName === 'PERSONALITY')
-                    <div class="visual-score-banner" style=" background-image: url('{{ asset('images/visual-score-pill-green.png') }}') !important;">
-                        <div class="visual-score-title">
-                            Visual Representation of Your Score
+                        <div class="visual-score-banner"
+                            style=" background-image: url('{{ asset('images/visual-score-pill-green.png') }}') !important;">
+                            <div class="visual-score-title">
+                                Visual Representation of Your Score
+                            </div>
                         </div>
-                    </div>
                     @else
-                    <div class="visual-score-banner" style=" background-image: url('{{ asset('images/visual-score-pill.png') }}') !important;">
-                        <div class="visual-score-title">
-                            Visual Representation of Your Score
+                        <div class="visual-score-banner"
+                            style=" background-image: url('{{ asset('images/visual-score-pill.png') }}') !important;">
+                            <div class="visual-score-title">
+                                Visual Representation of Your Score
+                            </div>
                         </div>
-                    </div>
                     @endif
                     <div class="career-chart">
 
@@ -1380,21 +1383,21 @@
                             {{-- new code  --}}
                             @php
                                 // Prepare total for percentage if needed, though we'll show raw average as requested
-                                    $total = collect($sections['chart'])->sum('average_value');
+$total = collect($sections['chart'])->sum('average_value');
 
-                                    // Fallback to avoid divide by zero
-                                    if ($total <= 0) {
-                                        $total = 1;
-                                    }
+// Fallback to avoid divide by zero
+if ($total <= 0) {
+    $total = 1;
+}
 
-                                    // Colors similar to Canva (matching AssessmentController)
-                                    $colors = [
-                                        '#facc15', // yellow
-                                       '#fb923c', // orange
-                                        '#ef4444', // red
-                                        '#ec4899', // pink
-                                        '#a855f7', // purple
-                                        '#6366f1', // blue
+// Colors similar to Canva (matching AssessmentController)
+$colors = [
+    '#facc15', // yellow
+    '#fb923c', // orange
+    '#ef4444', // red
+    '#ec4899', // pink
+    '#a855f7', // purple
+    '#6366f1', // blue
                                 ];
                             @endphp
                             <div class="donut-wrap">
@@ -1424,81 +1427,130 @@
 
                             </div>
                         @elseif ($domainDisplayName === 'PERSONALITY')
-                        @php
-                        $colors = [
-                            'Openness' => '#fb923c',
-                            'Agreeableness' => '#ef4444',
-                            'Conscientiousness' => '#ec4899',
-                            'Extraversion' => '#a855f7',
-                            'Neuroticism' => '#6366f1',
-                        ];
+                            <style>
+                               /* ===== PERSONALITY TREE (DOMPDF SAFE) ===== */
+
+.tree-wrap {
+    position: relative;
+    width: 600px;
+    height: 420px;
+    margin: 40px auto;
+}
+
+.tree-center {
+    position: absolute;
+    left: 40px;
+    top: 190px;
+    z-index: 10;
+
+    background: #9ca3af;
+    color: #ffffff;
+    font-weight: 700;
+    font-size: 12px;
+
+    padding: 10px 20px;
+    border-radius: 20px;
+}
+
+.tree-lines {
+    position: absolute;
+    left: 0;
+    top: 0;
+    z-index: 5;
+    pointer-events: none;
+}
+
+.tree-right {
+    position: absolute;
+    left: 330px;
+    top: 60px;
+    z-index: 10;
+}
+
+.tree-pill {
+    width: 230px;
+    margin-bottom: 22px;
+    padding: 8px 14px;
+
+    border-radius: 20px;
+    color: #ffffff;
+
+    font-size: 12px;
+    font-weight: 700;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.pill-score {
+    background: rgba(255, 255, 255, 0.25);
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-size: 11px;
+}
+
+                            </style>
+                            @php
+                            // Sort by highest score (Canva style)
+                            $personalityItems = collect($sections['chart'])
+                                ->sortByDesc('average_value')
+                                ->values();
+                        
+                            // Fixed Canva-like colors
+                            $colors = [
+                                '#6366f1', // Neuroticism
+                                '#ec4899', // Conscientiousness
+                                '#ef4444', // Agreeableness
+                                '#fb923c', // Openness
+                                '#a855f7', // Extraversion
+                            ];
                         @endphp
                         
-                        <table width="100%" cellpadding="0" cellspacing="0" style="margin-top:40px;">
-                            <tr>
-                                <!-- LEFT: MAIN NODE -->
-                                <td width="35%" align="center" valign="middle" style="border:none;">
-                                    <div style="
-                                        background:#9ca3af;
-                                        color:#fff;
-                                        padding:10px 18px;
-                                        border-radius:18px;
-                                        font-weight:800;
-                                        font-size:14px;
-                                        display:inline-block;
-                                    ">
-                                        PERSONALITY
+                        <div class="tree-wrap">
+                        
+                            {{-- CENTER NODE --}}
+                            <div class="tree-center">
+                                PERSONALITY
+                            </div>
+                        
+                            {{-- CURVED CONNECTORS (SVG – DOMPDF SAFE) --}}
+                            <svg
+                                class="tree-lines"
+                                width="600"
+                                height="420"
+                                viewBox="0 0 600 420"
+                                xmlns="http://www.w3.org/2000/svg"
+                            >
+                                @foreach ($personalityItems as $i => $sec)
+                                    @php
+                                        $y = 90 + ($i * 70);
+                                    @endphp
+                                    <path
+                                        d="M160 210 C230 {{ $y }}, 260 {{ $y }}, 330 {{ $y }}"
+                                        stroke="#444444"
+                                        stroke-width="2.5"
+                                        stroke-linecap="round"
+                                        fill="none"
+                                    />
+                                @endforeach
+                            </svg>
+                        
+                            {{-- RIGHT SIDE PILLS --}}
+                            <div class="tree-right">
+                                @foreach ($personalityItems as $i => $sec)
+                                    @php
+                                        $color = $colors[$i % count($colors)];
+                                    @endphp
+                                    <div class="tree-pill" style="background: {{ $color }};">
+                                        <span>{{ $sec['section_name'] }}</span>
+                                        <span class="pill-score">
+                                            Score: {{ $sec['average_value'] }}
+                                        </span>
                                     </div>
-                                </td>
-                        
-                                <!-- CONNECTOR COLUMN -->
-                                <td width="10%" valign="middle" style="border:none;">
-                                    <div style="border-left:2px solid #555; height:220px; margin:auto;"></div>
-                                </td>
-                        
-                                <!-- RIGHT: TRAITS -->
-                                <td width="55%" style="border:none;">
-                                    <table width="100%" cellpadding="0" cellspacing="0">
-                                        @foreach ($sections['chart'] as $sec)
-                                            @php
-                                                $color = $colors[$sec['section_name']] ?? '#666';
-                                            @endphp
-                                            <tr>
-                                                <!-- horizontal line -->
-                                                <td width="30" style="border:none;">
-                                                    <div style="border-top:2px solid #555; height:1px;"></div>
-                                                </td>
-                        
-                                                <!-- pill -->
-                                                <td style="border:none; padding-bottom:14px;">
-                                                    <div style="
-                                                        background: {{ $color }};
-                                                        color:#fff;
-                                                        padding:8px 14px;
-                                                        border-radius:16px;
-                                                        font-size:12px;
-                                                        font-weight:700;
-                                                        display:inline-block;
-                                                        min-width:220px;
-                                                    ">
-                                                        {{ $sec['section_name'] }}
-                                                        <span style="
-                                                            background: rgba(255,255,255,0.25);
-                                                            padding:4px 8px;
-                                                            border-radius:10px;
-                                                            margin-left:10px;
-                                                            font-size:11px;
-                                                        ">
-                                                            Score: {{ $sec['average_value'] }}
-                                                        </span>
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                        @endforeach
-                                    </table>
-                                </td>
-                            </tr>
-                        </table>
+                                @endforeach
+                            </div>
+                        </div>
                         @else
                             @foreach ($sections['chart'] as $sec)
                                 @php
