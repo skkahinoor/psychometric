@@ -1424,19 +1424,81 @@
 
                             </div>
                         @elseif ($domainDisplayName === 'PERSONALITY')
-                            @foreach ($sections['chart'] as $sec)
-                                @php
-                                    $value = (float) ($sec['average_value'] ?? 0);
-                                    $clamped = max(0, min(10, $value));
-                                    $percent = $clamped * 10; // 0-100
-                                @endphp
-                                <div class="barRow">
-                                    <div class="barLabel">{{ $sec['section_name'] }} ({{ $value }})</div>
-                                    <div class="barTrack">
-                                        <div class="barFill" style="width: {{ $percent }}%"></div>
+                        @php
+                        $colors = [
+                            'Openness' => '#fb923c',
+                            'Agreeableness' => '#ef4444',
+                            'Conscientiousness' => '#ec4899',
+                            'Extraversion' => '#a855f7',
+                            'Neuroticism' => '#6366f1',
+                        ];
+                        @endphp
+                        
+                        <table width="100%" cellpadding="0" cellspacing="0" style="margin-top:40px;">
+                            <tr>
+                                <!-- LEFT: MAIN NODE -->
+                                <td width="35%" align="center" valign="middle" style="border:none;">
+                                    <div style="
+                                        background:#9ca3af;
+                                        color:#fff;
+                                        padding:10px 18px;
+                                        border-radius:18px;
+                                        font-weight:800;
+                                        font-size:14px;
+                                        display:inline-block;
+                                    ">
+                                        PERSONALITY
                                     </div>
-                                </div>
-                            @endforeach
+                                </td>
+                        
+                                <!-- CONNECTOR COLUMN -->
+                                <td width="10%" valign="middle" style="border:none;">
+                                    <div style="border-left:2px solid #555; height:220px; margin:auto;"></div>
+                                </td>
+                        
+                                <!-- RIGHT: TRAITS -->
+                                <td width="55%" style="border:none;">
+                                    <table width="100%" cellpadding="0" cellspacing="0">
+                                        @foreach ($sections['chart'] as $sec)
+                                            @php
+                                                $color = $colors[$sec['section_name']] ?? '#666';
+                                            @endphp
+                                            <tr>
+                                                <!-- horizontal line -->
+                                                <td width="30" style="border:none;">
+                                                    <div style="border-top:2px solid #555; height:1px;"></div>
+                                                </td>
+                        
+                                                <!-- pill -->
+                                                <td style="border:none; padding-bottom:14px;">
+                                                    <div style="
+                                                        background: {{ $color }};
+                                                        color:#fff;
+                                                        padding:8px 14px;
+                                                        border-radius:16px;
+                                                        font-size:12px;
+                                                        font-weight:700;
+                                                        display:inline-block;
+                                                        min-width:220px;
+                                                    ">
+                                                        {{ $sec['section_name'] }}
+                                                        <span style="
+                                                            background: rgba(255,255,255,0.25);
+                                                            padding:4px 8px;
+                                                            border-radius:10px;
+                                                            margin-left:10px;
+                                                            font-size:11px;
+                                                        ">
+                                                            Score: {{ $sec['average_value'] }}
+                                                        </span>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        @endforeach
+                                    </table>
+                                </td>
+                            </tr>
+                        </table>
                         @else
                             @foreach ($sections['chart'] as $sec)
                                 @php
