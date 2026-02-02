@@ -1355,32 +1355,46 @@
             {{-- Static bar chart (PDF-friendly, mirrors Result page data) --}}
             <div class="pdf-page careerpath-chart">
                 @if (!empty($sections['chart']))
-                    <div class="visual-score-banner">
+                    @if ($domainDisplayName === 'INTEREST' && $domainDisplayName === 'LEARNING STYLE')
+                    <div class="visual-score-banner" style=" background-image: url('{{ asset('images/visual-score-pill.png') }}') !important;">
                         <div class="visual-score-title">
                             Visual Representation of Your Score
                         </div>
                     </div>
+                    @elseif ($domainDisplayName === 'PERSONALITY')
+                    <div class="visual-score-banner" style=" background-image: url('{{ asset('images/visual-score-pill-green.png') }}') !important;">
+                        <div class="visual-score-title">
+                            Visual Representation of Your Score
+                        </div>
+                    </div>
+                    @else
+                    <div class="visual-score-banner" style=" background-image: url('{{ asset('images/visual-score-pill.png') }}') !important;">
+                        <div class="visual-score-title">
+                            Visual Representation of Your Score
+                        </div>
+                    </div>
+                    @endif
                     <div class="career-chart">
 
                         @if ($domainDisplayName === 'INTEREST')
                             {{-- new code  --}}
                             @php
                                 // Prepare total for percentage if needed, though we'll show raw average as requested
-$total = collect($sections['chart'])->sum('average_value');
+                                    $total = collect($sections['chart'])->sum('average_value');
 
-// Fallback to avoid divide by zero
-if ($total <= 0) {
-    $total = 1;
-}
+                                    // Fallback to avoid divide by zero
+                                    if ($total <= 0) {
+                                        $total = 1;
+                                    }
 
-// Colors similar to Canva (matching AssessmentController)
-$colors = [
-    '#facc15', // yellow
-    '#fb923c', // orange
-    '#ef4444', // red
-    '#ec4899', // pink
-    '#a855f7', // purple
-    '#6366f1', // blue
+                                    // Colors similar to Canva (matching AssessmentController)
+                                    $colors = [
+                                        '#facc15', // yellow
+                                       '#fb923c', // orange
+                                        '#ef4444', // red
+                                        '#ec4899', // pink
+                                        '#a855f7', // purple
+                                        '#6366f1', // blue
                                 ];
                             @endphp
                             <div class="donut-wrap">
@@ -1409,6 +1423,20 @@ $colors = [
                                 </div>
 
                             </div>
+                        @elseif ($domainDisplayName === 'PERSONALITY')
+                            @foreach ($sections['chart'] as $sec)
+                                @php
+                                    $value = (float) ($sec['average_value'] ?? 0);
+                                    $clamped = max(0, min(10, $value));
+                                    $percent = $clamped * 10; // 0-100
+                                @endphp
+                                <div class="barRow">
+                                    <div class="barLabel">{{ $sec['section_name'] }} ({{ $value }})</div>
+                                    <div class="barTrack">
+                                        <div class="barFill" style="width: {{ $percent }}%"></div>
+                                    </div>
+                                </div>
+                            @endforeach
                         @else
                             @foreach ($sections['chart'] as $sec)
                                 @php
