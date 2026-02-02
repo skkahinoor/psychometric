@@ -1428,129 +1428,136 @@ $colors = [
                             </div>
                         @elseif ($domainDisplayName === 'PERSONALITY')
                             <style>
-                               /* ===== PERSONALITY TREE (DOMPDF SAFE) ===== */
+                                /* ===== PERSONALITY TREE (CANVA/IMAGE 2 STYLE) ===== */
 
-.tree-wrap {
-    position: relative;
-    width: 600px;
-    height: 420px;
-    margin: 40px auto;
-}
+                                .tree-wrap {
+                                    position: relative;
+                                    width: 600px;
+                                    height: 420px;
+                                    margin: 40px auto;
+                                }
 
-.tree-center {
-    position: absolute;
-    left: 40px;
-    top: 190px;
-    z-index: 10;
+                                .tree-center {
+                                    position: absolute;
+                                    left: 20px;
+                                    top: 195px;
+                                    z-index: 10;
 
-    background: #9ca3af;
-    color: #ffffff;
-    font-weight: 700;
-    font-size: 12px;
+                                    background: #9ca3af;
+                                    color: #ffffff;
+                                    font-weight: 700;
+                                    font-size: 13px;
 
-    padding: 10px 20px;
-    border-radius: 20px;
-}
+                                    padding: 10px 20px;
+                                    border-radius: 12px;
+                                    width: 110px;
+                                    text-align: center;
+                                }
 
-.tree-lines {
-    position: absolute;
-    left: 0;
-    top: 0;
-    z-index: 5;
-    pointer-events: none;
-}
+                                .tree-lines {
+                                    position: absolute;
+                                    left: 0;
+                                    top: 0;
+                                    width: 600px;
+                                    height: 420px;
+                                    z-index: 1;
+                                    display: block;
+                                }
 
-.tree-right {
-    position: absolute;
-    left: 330px;
-    top: 60px;
-    z-index: 10;
-}
+                                .tree-right {
+                                    position: absolute;
+                                    left: 360px;
+                                    top: 55px;
+                                    z-index: 10;
+                                }
 
-.tree-pill {
-    width: 230px;
-    margin-bottom: 22px;
-    padding: 8px 14px;
+                                .tree-row {
+                                    margin-bottom: 22px;
+                                    height: 40px;
+                                    width: 300px;
+                                }
 
-    border-radius: 20px;
-    color: #ffffff;
+                                .pill-name {
+                                    display: inline-block;
+                                    padding: 10px 15px;
+                                    border-radius: 10px;
+                                    color: #ffffff;
+                                    font-size: 13px;
+                                    font-weight: 700;
+                                    min-width: 100px;
+                                    text-align: center;
+                                    vertical-align: middle;
+                                }
 
-    font-size: 12px;
-    font-weight: 700;
+                                .pill-score-box {
+                                    display: inline-block;
+                                    margin-left: 8px;
+                                    border-radius: 10px;
+                                    color: #ffffff;
+                                    font-size: 13px;
+                                    font-weight: 700;
+                                    vertical-align: middle;
+                                    overflow: hidden;
+                                }
 
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.pill-score {
-    background: rgba(255, 255, 255, 0.25);
-    padding: 2px 8px;
-    border-radius: 10px;
-    font-size: 11px;
-}
-
+                                .score-inner {
+                                    padding: 10px 15px;
+                                    background: rgba(0, 0, 0, 0.15);
+                                }
                             </style>
                             @php
-                            // Sort by highest score (Canva style)
-                            $personalityItems = collect($sections['chart'])
-                                ->sortByDesc('average_value')
-                                ->values();
-                        
-                            // Fixed Canva-like colors
-                            $colors = [
-                                '#6366f1', // Neuroticism
-                                '#ec4899', // Conscientiousness
-                                '#ef4444', // Agreeableness
-                                '#fb923c', // Openness
-                                '#a855f7', // Extraversion
-                            ];
-                        @endphp
-                        
-                        <div class="tree-wrap">
-                        
-                            {{-- CENTER NODE --}}
-                            <div class="tree-center">
-                                PERSONALITY
+                                // Order usually matches the standard Big Five or the chart data
+                                $personalityItems = collect($sections['chart'])->values();
+
+                                // Colors from Image 2
+                                $colors = [
+                                    '#df8d4c', // Orange
+                                    '#cb574c', // Red
+                                    '#cf5281', // Pink
+                                    '#9b62c4', // Purple
+                                    '#6366f1', // Blue
+                                ];
+                            @endphp
+
+                            <div class="tree-wrap">
+
+                                {{-- CENTER NODE --}}
+                                <div class="tree-center">
+                                    PERSONALITY
+                                </div>
+
+                                {{-- CURVED CONNECTORS (SVG – DOMPDF SAFE) --}}
+                                <svg class="tree-lines" width="600" height="420"
+                                    xmlns="http://www.w3.org/2000/svg">
+                                    @foreach ($personalityItems as $i => $sec)
+                                        @php
+                                            $y = 75 + $i * 62; // Adjusted spacing
+                                        @endphp
+                                        <path d="M130 215 C245 215, 245 {{ $y }}, 360 {{ $y }}"
+                                            stroke="#666666" stroke-width="2" stroke-linecap="round"
+                                            fill="none" />
+                                    @endforeach
+                                </svg>
+
+                                {{-- RIGHT SIDE ROWS --}}
+                                <div class="tree-right">
+                                    @foreach ($personalityItems as $i => $sec)
+                                        @php
+                                            $color = $colors[$i % count($colors)];
+                                        @endphp
+                                        <div class="tree-row">
+                                            <div class="pill-name" style="background: {{ $color }};">
+                                                {{ $sec['section_name'] }}
+                                            </div>
+                                            <div class="pill-score-box" style="background: {{ $color }};">
+                                                <div class="score-inner">
+                                                    Score: {{ $sec['average_value'] }}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    @endforeach
+                                </div>
                             </div>
-                        
-                            {{-- CURVED CONNECTORS (SVG – DOMPDF SAFE) --}}
-                            <svg
-                                class="tree-lines"
-                                width="600"
-                                height="420"
-                                viewBox="0 0 600 420"
-                                xmlns="http://www.w3.org/2000/svg"
-                            >
-                                @foreach ($personalityItems as $i => $sec)
-                                    @php
-                                        $y = 90 + ($i * 70);
-                                    @endphp
-                                    <path
-                                        d="M160 210 C230 {{ $y }}, 260 {{ $y }}, 330 {{ $y }}"
-                                        stroke="#444444"
-                                        stroke-width="2.5"
-                                        stroke-linecap="round"
-                                        fill="none"
-                                    />
-                                @endforeach
-                            </svg>
-                        
-                            {{-- RIGHT SIDE PILLS --}}
-                            <div class="tree-right">
-                                @foreach ($personalityItems as $i => $sec)
-                                    @php
-                                        $color = $colors[$i % count($colors)];
-                                    @endphp
-                                    <div class="tree-pill" style="background: {{ $color }};">
-                                        <span>{{ $sec['section_name'] }}</span>
-                                        <span class="pill-score">
-                                            Score: {{ $sec['average_value'] }}
-                                        </span>
-                                    </div>
-                                @endforeach
-                            </div>
-                        </div>
                         @else
                             @foreach ($sections['chart'] as $sec)
                                 @php
