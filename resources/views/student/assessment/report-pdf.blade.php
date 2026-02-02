@@ -663,7 +663,7 @@
             width: 530px;
             /* Slightly wider */
 
-            background-image: url('{{ asset('images/careerpath.png') }}');
+            /* background-image: url('{{ asset('images/careerpath.png') }}'); */
             background-repeat: no-repeat;
             background-position: left center;
             background-size: 100% 100%;
@@ -703,7 +703,7 @@
             /* Adjust to match design */
             height: 42px;
 
-            background-image: url('{{ asset('images/career-folder.png') }}');
+            /* background-image: url('{{ asset('images/career-folder.png') }}'); */
             background-repeat: no-repeat;
             background-size: 100% 100%;
             background-position: left center;
@@ -752,14 +752,14 @@
             font-size: 13px;
         }
 
-        .career-item:before {
+        /* .career-item:before {
             content: "■";
             position: absolute;
             left: 0;
             top: 1px;
             font-size: 8px;
             color: #38bdf8;
-        }
+        } */
 
         /* ===== Visual Score custom banner (Canva style) ===== */
 
@@ -1092,19 +1092,22 @@
                                             </div>
                                         </div>
 
-                                        <div class="interest-score"
+                                        {{-- <div class="interest-score"
                                             style="margin-top: 130px; margin-left: 30px; background: #24a401;">
                                             {{ $domainName === 'APTITUDE' ? 'TOTAL SCORE:' : 'AVERAGE SCORE:' }}
                                             {{ $section['average'] }}
-                                        </div>
+                                        </div> --}}
 
                                     </td>
 
                                     {{-- RIGHT COLUMN --}}
                                     <td width="330" valign="top" style="border: none;">
                                         <div class="interest-right" style="background: #24a401;">
-                                            {{ $domainName === 'APTITUDE' ? 'TOTAL SCORE:' : 'AVERAGE SCORE:' }}
-                                            {{ $section['average'] }}
+                                            <p
+                                                style="color: #ffffff !important; text-align: center !important; font-size: 12px !important; font-weight: 600 !important;">
+                                                {{ $domainName === 'APTITUDE' ? 'TOTAL SCORE:' : 'AVERAGE SCORE:' }}
+                                                {{ $section['average'] }}
+                                            </p>
                                             <div>
                                                 {!! strip_tags($section['section_description']) !!}
                                             </div>
@@ -1200,58 +1203,28 @@
                     @php
                         $careerPathSections = $sections['cards'];
                     @endphp
-                    <div class="h2-banner-suggested-career">
-                        <div class="suggested-title-wrap">
-                            Suggested Career Paths
+                    @if ($domainDisplayName === 'INTEREST' && $domainDisplayName === 'LEARNING STYLE')
+                        <div class="h2-banner-suggested-career"
+                            style=" background-image: url('{{ asset('images/careerpath.png') }}') !important;">
+                            <div class="suggested-title-wrap">
+                                Suggested Career Paths
+                            </div>
                         </div>
-                    </div>
-
-                    {{-- <div class="career-table">
-                        <table>
-                            <tbody>
-                                @foreach ($careerPathSections as $sec)
-                                    @php
-                                        $sectionId = $sec['section_id'] ?? null;
-                                        $paths = ($careerpaths[$sectionId] ?? collect())
-                                            ->filter(function ($p) {
-                                                return $p->sections && $p->sections->count() === 1;
-                                            })
-                                            ->values();
-                                        $combinedCareers = collect();
-                                        foreach ($paths as $p) {
-                                            $careersWithCategories = $p->careers->load('careerCategory');
-                                            $combinedCareers = $combinedCareers->merge($careersWithCategories);
-                                        }
-                                        $combinedCareers = $combinedCareers->unique('id')->values();
-                                    @endphp
-                                    @if ($paths->isNotEmpty())
-                                        <tr>
-                                            <td style="width: 30%">{{ $sec['section_name'] }}</td>
-                                            <td>
-                                                @if ($combinedCareers->count() > 0)
-                                                    
-                                                    @php
-                                                        $uniqueCategories = $combinedCareers
-                                                            ->pluck('careerCategory.name') // extract category names
-                                                            ->filter() // remove null values
-                                                            ->unique() // keep only unique ones
-                                                            ->values();
-                                                    @endphp
-
-                                                    @foreach ($uniqueCategories as $categoryName)
-                                                        {!! $categoryName !!}
-                                                    @endforeach
-                                                    
-                                                @else
-                                                    <span class="meta">No careers assigned</span>
-                                                @endif
-                                            </td>
-                                        </tr>
-                                    @endif
-                                @endforeach
-                            </tbody>
-                        </table>
-                    </div> --}}
+                    @elseif ($domainDisplayName === 'PERSONALITY')
+                        <div class="h2-banner-suggested-career"
+                            style=" background-image: url('{{ asset('images/careerpath-green.png') }}') !important;">
+                            <div class="suggested-title-wrap" style="color: #000000 !important;">
+                                Suggested Career Paths
+                            </div>
+                        </div>
+                    @else
+                        <div class="h2-banner-suggested-career"
+                            style=" background-image: url('{{ asset('images/careerpath.png') }}') !important;">
+                            <div class="suggested-title-wrap">
+                                Suggested Career Paths
+                            </div>
+                        </div>
+                    @endif
 
 
                     {{-- new code  --}}
@@ -1289,27 +1262,86 @@
                                 <div class="career-block">
 
                                     <!-- Blue category header (folder style) -->
-                                    <div class="career-category">
-                                        <div class="career-category-title">
-                                            {{ $sec['section_name'] }}
+                                    @if ($domainDisplayName === 'INTEREST' && $domainDisplayName === 'LEARNING STYLE')
+                                        <div class="career-category"
+                                            style="background-image: url('{{ asset('images/career-folder.png') }}') !important;">
+                                            <div class="career-category-title">
+                                                {{ $sec['section_name'] }}
+                                            </div>
                                         </div>
-                                    </div>
-
+                                    @elseif ($domainDisplayName === 'PERSONALITY')
+                                        <div class="career-category"
+                                            style="background-image: url('{{ asset('images/career-folder-green.png') }}') !important;">
+                                            <div class="career-category-title" style="color: #000000 !important;">
+                                                {{ $sec['section_name'] }}
+                                            </div>
+                                        </div>
+                                    @else
+                                        <div class="career-category"
+                                            style="background-image: url('{{ asset('images/career-folder.png') }}') !important;">
+                                            <div class="career-category-title">
+                                                {{ $sec['section_name'] }}
+                                            </div>
+                                        </div>
+                                    @endif
                                     <!-- Canva-style 3-column layout (PDF safe) -->
                                     <div class="career-grid">
                                         <div class="career-row">
                                             @foreach ($chunks as $col)
                                                 <div class="career-cell">
-                                                    @foreach ($col as $categoryName)
-                                                        <div class="career-item">
-                                                            {!! $categoryName !!}
-                                                        </div>
-                                                    @endforeach
+                                                    @if ($domainDisplayName === 'INTEREST' && $domainDisplayName === 'LEARNING STYLE')
+                                                        <style>
+                                                            .career-item:before {
+                                                                content: "■";
+                                                                position: absolute;
+                                                                left: 0;
+                                                                top: 1px;
+                                                                font-size: 8px;
+                                                                color: #38bdf8;
+                                                            }
+                                                        </style>
+                                                        @foreach ($col as $categoryName)
+                                                            <div class="career-item">
+                                                                {!! $categoryName !!}
+                                                            </div>
+                                                        @endforeach
+                                                    @elseif ($domainDisplayName === 'PERSONALITY')
+                                                        <style>
+                                                            .career-item:before {
+                                                                content: "■";
+                                                                position: absolute;
+                                                                left: 0;
+                                                                top: 1px;
+                                                                font-size: 8px;
+                                                                color: #18ad00 !important;
+                                                            }
+                                                        </style>
+                                                        @foreach ($col as $categoryName)
+                                                            <div class="career-item">
+                                                                {!! $categoryName !!}
+                                                            </div>
+                                                        @endforeach
+                                                    @else
+                                                        <style>
+                                                            .career-item:before {
+                                                                content: "■";
+                                                                position: absolute;
+                                                                left: 0;
+                                                                top: 1px;
+                                                                font-size: 8px;
+                                                                color: #38bdf8;
+                                                            }
+                                                        </style>
+                                                        @foreach ($col as $categoryName)
+                                                            <div class="career-item">
+                                                                {!! $categoryName !!}
+                                                            </div>
+                                                        @endforeach
+                                                    @endif
                                                 </div>
                                             @endforeach
                                         </div>
                                     </div>
-
                                 </div>
                             @endif
                         @endforeach
