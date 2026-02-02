@@ -1619,6 +1619,100 @@ $colors = [
                                     @endforeach
                                 </div>
                             </div>
+                        @elseif ($domainDisplayName === 'GOAL ORIENTATION')
+                            <style>
+                                .goal-container {
+                                    width: 100%;
+                                    text-align: center;
+                                    margin: 40px 0;
+                                }
+
+                                .goal-table {
+                                    width: 440px;
+                                    margin: 0 auto;
+                                    border-collapse: separate;
+                                    border-spacing: 20px 0;
+                                }
+
+                                .goal-card {
+                                    padding: 35px 15px;
+                                    border-radius: 12px;
+                                    color: #ffffff;
+                                    text-align: center;
+                                    height: 250px;
+                                }
+
+                                .goal-score-val {
+                                    font-size: 42px;
+                                    font-weight: 800;
+                                    margin: 10px 0;
+                                    display: block;
+                                }
+
+                                .goal-label-text {
+                                    font-size: 16px;
+                                    font-weight: 700;
+                                    line-height: 1.3;
+                                }
+                            </style>
+                            <div class="goal-container">
+                                <table class="goal-table">
+                                    <tr>
+                                        @foreach ($sections['chart'] as $i => $sec)
+                                            @php
+                                                $isLong = str_contains(strtolower($sec['section_name']), 'long');
+                                                $cardBg = $isLong ? '#41c385' : '#dbb71a';
+
+                                                // Needle Logic: 0-10 scale maps to -120 to +120 degrees
+                                                $score = (float) ($sec['average_value'] ?? 0);
+                                                $angleDeg = ($score / 10) * 240 - 120;
+                                                $rad = (($angleDeg - 90) * M_PI) / 180;
+
+                                                // Calculate needle endpoints using PHP Math (more robust for PDF engines)
+                                                $x1 = 50 + 5 * cos($rad);
+                                                $y1 = 50 + 5 * sin($rad);
+                                                $x2 = 50 + 35 * cos($rad);
+                                                $y2 = 50 + 35 * sin($rad);
+                                            @endphp
+                                            <td width="50%" valign="top">
+                                                <div class="goal-card"
+                                                    style="background-color: {{ $cardBg }};">
+
+                                                    <div style="margin-bottom: 20px;">
+                                                        <svg width="100" height="100" viewBox="0 0 100 100"
+                                                            xmlns="http://www.w3.org/2000/svg">
+                                                            {{-- Outer translucent ring --}}
+                                                            <circle cx="50" cy="50" r="45"
+                                                                stroke="rgba(255,255,255,0.3)" stroke-width="2"
+                                                                fill="none" />
+                                                            {{-- Main white ring --}}
+                                                            <circle cx="50" cy="50" r="38"
+                                                                stroke="#ffffff" stroke-width="4" fill="none" />
+
+                                                            {{-- Dynamic Needle --}}
+                                                            <line x1="{{ $x1 }}"
+                                                                y1="{{ $y1 }}" x2="{{ $x2 }}"
+                                                                y2="{{ $y2 }}" stroke="#ffffff"
+                                                                stroke-width="5" stroke-linecap="round" />
+
+                                                            {{-- Center Point --}}
+                                                            <circle cx="50" cy="50" r="4"
+                                                                fill="#ffffff" />
+                                                        </svg>
+                                                    </div>
+
+                                                    <span class="goal-score-val">{{ $sec['average_value'] }}</span>
+
+                                                    <div class="goal-label-text">
+                                                        {{ $sec['section_name'] }}<br>Score
+                                                    </div>
+
+                                                </div>
+                                            </td>
+                                        @endforeach
+                                    </tr>
+                                </table>
+                            </div>
                         @else
                             @foreach ($sections['chart'] as $sec)
                                 @php
