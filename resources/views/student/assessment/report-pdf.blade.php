@@ -962,6 +962,11 @@
                         style=" background-image: url('{{ asset('images/h2-green.png') }}') !important;">
                         <h2 class="h2-title">{{ $domainDisplayName }}</h2>
                     </div>
+                @elseif ($domainDisplayName === 'GOAL ORIENTATION')
+                    <div class="h2-banner"
+                        style=" background-image: url('{{ asset('images/h2-yellow.png') }}') !important;">
+                        <h2 class="h2-title" style="font-size: 13px !important;">{{ $domainDisplayName }}</h2>
+                    </div>
                 @else
                     <div class="h2-banner"
                         style=" background-image: url('{{ asset('images/h2-bg.png') }}') !important;">
@@ -1092,12 +1097,6 @@
                                             </div>
                                         </div>
 
-                                        {{-- <div class="interest-score"
-                                            style="margin-top: 130px; margin-left: 30px; background: #24a401;">
-                                            {{ $domainName === 'APTITUDE' ? 'TOTAL SCORE:' : 'AVERAGE SCORE:' }}
-                                            {{ $section['average'] }}
-                                        </div> --}}
-
                                     </td>
 
                                     {{-- RIGHT COLUMN --}}
@@ -1108,6 +1107,60 @@
                                                 {{ $domainName === 'APTITUDE' ? 'TOTAL SCORE:' : 'AVERAGE SCORE:' }}
                                                 {{ $section['average'] }}
                                             </p>
+                                            <div>
+                                                {!! strip_tags($section['section_description']) !!}
+                                            </div>
+
+                                            @if ($domainName === 'OCEAN')
+                                                <div><strong>{{ $section['label'] }}:</strong>
+                                                    {{ $section['relevant_description'] }}
+                                                </div>
+                                            @elseif ($domainName === 'WORK VALUES')
+                                                @if ($section['label'] === 'Low')
+                                                    <div><strong>Low:</strong> {{ $section['low'] }}</div>
+                                                @elseif ($section['label'] === 'Mid')
+                                                    <div><strong>Mid:</strong> {{ $section['mid'] }}</div>
+                                                @elseif ($section['label'] === 'High')
+                                                    <div><strong>High:</strong> {{ $section['high'] }}</div>
+                                                @endif
+                                            @else
+                                                <div><strong>Key Traits:</strong> {{ $section['section_keytraits'] }}
+                                                </div>
+                                                <div><strong>Enjoys:</strong> {{ $section['section_enjoys'] }}</div>
+                                                <div><strong>Ideal Environments:</strong>
+                                                    {{ $section['section_idealenvironments'] }}
+                                                </div>
+                                            @endif
+
+                                        </div>
+
+                                    </td>
+                                @elseif ($domainDisplayName === 'GOAL ORIENTATION')
+                                    {{-- LEFT COLUMN --}}
+                                    <td width="80" valign="top" style="border: none;">
+                                        <div class="titlebackground"
+                                            style="background-image: url('{{ asset('images/sectionbackground-yellow.png') }}') !important;">
+                                            <div class="interest-badge"
+                                                style="margin-top: 12px; margin-left: 46px; font-size: 11px;">
+                                                {{ str_pad($index + 1, 2, '0', STR_PAD_LEFT) }}
+                                            </div>
+                                            <div class="interest-title"
+                                                style="margin-top: 23px; margin-left: 55px; font-size: 15px;">
+                                                {{ $section['section_name'] }}
+                                            </div>
+                                        </div>
+
+                                        <div class="interest-score"
+                                            style="margin-top: 130px; margin-left: 30px;background: #f59e0b;">
+                                            {{ $domainName === 'APTITUDE' ? 'TOTAL SCORE:' : 'AVERAGE SCORE:' }}
+                                            {{ $section['average'] }}
+                                        </div>
+
+                                    </td>
+
+                                    {{-- RIGHT COLUMN --}}
+                                    <td width="330" valign="top" style="border: none;">
+                                        <div class="interest-right" style="background: #f59e0b;">
                                             <div>
                                                 {!! strip_tags($section['section_description']) !!}
                                             </div>
@@ -1369,6 +1422,13 @@
                                 Visual Representation of Your Score
                             </div>
                         </div>
+                    @elseif ($domainDisplayName === 'GOAL ORIENTATION')
+                        <div class="visual-score-banner"
+                            style=" background-image: url('{{ asset('images/visual-score-pill-cream.png') }}') !important;">
+                            <div class="visual-score-title" style="color: #000000 !important;">
+                                Visual Representation of Your Score
+                            </div>
+                        </div>
                     @else
                         <div class="visual-score-banner"
                             style=" background-image: url('{{ asset('images/visual-score-pill.png') }}') !important;">
@@ -1533,7 +1593,8 @@ $colors = [
                                         @php
                                             $y = 75 + $i * 62; // Adjusted spacing
                                         @endphp
-                                        <path d="M130 215 C245 215, 245 {{ $y }}, 360 {{ $y }}"
+                                        <path
+                                            d="M130 215 C245 215, 245 {{ $y }}, 360 {{ $y }}"
                                             stroke="#666666" stroke-width="2" stroke-linecap="round"
                                             fill="none" />
                                     @endforeach
