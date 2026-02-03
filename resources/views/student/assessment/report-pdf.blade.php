@@ -1004,10 +1004,15 @@
                     $domainDisplayName = $sections['cards'][0]['domain_display_name'] ?? $domainName;
                 @endphp
 
-                @if ($domainDisplayName === 'INTEREST' && $domainDisplayName === 'LEARNING STYLE')
+                @if ($domainDisplayName === 'INTEREST')
                     <div class="h2-banner"
                         style=" background-image: url('{{ asset('images/h2-bg.png') }}') !important;">
                         <h2 class="h2-title">{{ $domainDisplayName }}</h2>
+                    </div>
+                @elseif ($domainDisplayName === 'LEARNING STYLE')
+                    <div class="h2-banner"
+                        style=" background-image: url('{{ asset('images/h2-bg.png') }}') !important;">
+                        <h2 class="h2-title" style="margin-left: -5px !important;">{{ $domainDisplayName }}</h2>
                     </div>
                 @elseif ($domainDisplayName === 'PERSONALITY')
                     <div class="h2-banner"
@@ -1055,6 +1060,12 @@
                             <img src="{{ asset('images/Aptitude.png') }}" style="height: 160px; width: 650px;"
                                 alt="Psychometric Domains">
                         </div>
+                    @elseif ($domainDisplayName === 'LEARNING STYLE')
+                        <!-- CENTRAL IMAGE -->
+                        <div class="intro-image-wrap">
+                            <img src="{{ asset('images/learningstyle.png') }}" style="height: 430px; width: 430px;"
+                                alt="Psychometric Domains">
+                        </div>
                     @endif
                 </div>
             </div>
@@ -1099,12 +1110,28 @@
                             </div>
                         </div>
                     </div>
+                @elseif ($domainDisplayName === 'LEARNING STYLE')
+                    @php
+                        $cards = collect($sections['cards'] ?? []);
+                        $highestSection = $cards->sortByDesc('average')->first();
+                        $highestName = $highestSection['section_name'] ?? 'VISUAL';
+                    @endphp
+                    <div class="h2-subbanner"
+                        style="background-image: url('{{ asset('images/subtitlebanner.png') }}');">
+                        <div>
+                            <div class="sub-text" style="color: #000; font-size: 11px; margin-top: 45px;">
+                                YOUR SCORE IN {{ strtoupper($highestName) }} DOMAIN IS THE HIGHEST.<br>HERE ARE THE
+                                RECOMMENDATIONS<br>AS PER YOUR DOMINANT LEARNING STYLE
+                            </div>
+                        </div>
+                    </div>
                 @endif
 
                 {{-- new code --}}
                 <div class="section-contaner">
                     @foreach ($sections['cards'] ?? [] as $index => $section)
-                        <table width="100%" cellpadding="0" cellspacing="0">
+                        <table width="100%" cellpadding="0" cellspacing="0"
+                            style="page-break-inside: avoid; margin-bottom: 20px;">
                             <tr>
 
                                 @if ($domainDisplayName === 'INTEREST' || $domainDisplayName === 'LEARNING STYLE')
@@ -1297,6 +1324,57 @@
                                     {{-- RIGHT COLUMN --}}
                                     <td width="330" valign="top" style="border: none;">
                                         <div class="interest-right" style="background: #ffb4af;">
+                                            <div>
+                                                {!! strip_tags($section['section_description']) !!}
+                                            </div>
+                                            @if ($domainName === 'OCEAN')
+                                                <div><strong>{{ $section['label'] }}:</strong>
+                                                    {{ $section['relevant_description'] }}
+                                                </div>
+                                            @elseif ($domainName === 'WORK VALUES')
+                                                @if ($section['label'] === 'Low')
+                                                    <div><strong>Low:</strong> {{ $section['low'] }}</div>
+                                                @elseif ($section['label'] === 'Mid')
+                                                    <div><strong>Mid:</strong> {{ $section['mid'] }}</div>
+                                                @elseif ($section['label'] === 'High')
+                                                    <div><strong>High:</strong> {{ $section['high'] }}</div>
+                                                @endif
+                                            @else
+                                                <div><strong>Key Traits:</strong> {{ $section['section_keytraits'] }}
+                                                </div>
+                                                <div><strong>Enjoys:</strong> {{ $section['section_enjoys'] }}</div>
+                                                <div><strong>Ideal Environments:</strong>
+                                                    {{ $section['section_idealenvironments'] }}
+                                                </div>
+                                            @endif
+                                        </div>
+                                    </td>
+                                @elseif ($domainName === 'LEARNING STYLE')
+                                    {{-- LEFT COLUMN --}}
+                                    <td width="80" valign="top" style="border: none;">
+                                        <div class="titlebackground"
+                                            style="background-image: url('{{ asset('images/sectionbackground.png') }}') !important;">
+                                            <div class="interest-badge"
+                                                style="margin-top: 12px; margin-left: 46px; font-size: 11px;">
+                                                {{ str_pad($index + 1, 2, '0', STR_PAD_LEFT) }}
+                                            </div>
+                                            <div class="interest-title"
+                                                style="margin-top: 23px; margin-left: 55px; font-size: 15px;">
+                                                {{ $section['section_name'] }}
+                                            </div>
+                                        </div>
+
+                                        <div class="interest-score"
+                                            style="margin-top: 130px; margin-left: 30px;background: #38bdf8;">
+                                            {{ $domainName === 'APTITUDE' ? 'TOTAL SCORE:' : 'AVERAGE SCORE:' }}
+                                            {{ $section['average'] }}
+                                        </div>
+
+                                    </td>
+
+                                    {{-- RIGHT COLUMN --}}
+                                    <td width="330" valign="top" style="border: none;">
+                                        <div class="interest-right" style="background: #38b6ff;">
                                             <div>
                                                 {!! strip_tags($section['section_description']) !!}
                                             </div>
@@ -1911,6 +1989,82 @@ $colors = [
                                     </div>
                                 @endforeach
                             </div>
+                        @elseif ($domainDisplayName === 'LEARNING STYLE')
+                            <div style="margin-top: 30px; width: 100%;">
+                                @php
+                                    $lsColors = ['#22c55e', '#84cc16', '#eab308', '#f97316'];
+                                @endphp
+                                <table width="100%" cellpadding="0" cellspacing="0">
+                                    <tr>
+                                        @foreach ($sections['chart'] as $index => $sec)
+                                            @php
+                                                $val = (float) ($sec['average_value'] ?? 0);
+                                                $pct = max(0, min(100, $val * 10)); // 0-10 -> 0-100%
+                                                $color = $lsColors[$index % count($lsColors)];
+                                                $r = 35;
+                                                $cx = 50;
+                                                $cy = 50;
+
+                                                // Calculate Arc Path Manually (Robust for PDF)
+                                                // Start at top (-90 degrees)
+                                                $angle = $pct * 3.6;
+                                                // If full circle, use slightly less to avoid arc glitch, or just circle
+                                                $isFull = $angle >= 359.9;
+
+                                                // End coordinates
+                                                // 0 deg is 12 o'clock in this logic if we subtract PI/2
+                                                $rad = deg2rad($angle - 90);
+                                                $x = $cx + $r * cos($rad);
+                                                $y = $cy + $r * sin($rad);
+
+                                                // Start coordinates (top)
+                                                $sx = $cx; // 50
+                                                $sy = $cy - $r; // 15
+
+                                                $largeArc = $angle > 180 ? 1 : 0;
+
+                                                // M startX startY A r r 0 largeArc sweep endX endY
+                                                $d = "M $sx $sy A $r $r 0 $largeArc 1 $x $y";
+                                            @endphp
+                                            <td align="center" valign="top" width="25%">
+                                                <div
+                                                    style="position: relative; width: 100px; height: 100px; margin: 0 auto;">
+                                                    <svg width="100" height="100" viewBox="0 0 100 100"
+                                                        xmlns="http://www.w3.org/2000/svg">
+                                                        {{-- Background Track (Grey) --}}
+                                                        <circle cx="50" cy="50" r="35" stroke="#e5e7eb"
+                                                            stroke-width="10px" fill="none" />
+
+                                                        {{-- Colored Progress Arc --}}
+                                                        @if ($pct > 0)
+                                                            @if ($isFull)
+                                                                <circle cx="50" cy="50" r="35"
+                                                                    stroke="{{ $color }}" stroke-width="10px"
+                                                                    fill="none" />
+                                                            @else
+                                                                <path d="{{ $d }}"
+                                                                    stroke="{{ $color }}" stroke-width="10px"
+                                                                    fill="none" stroke-linecap="round" />
+                                                            @endif
+                                                        @endif
+
+                                                        {{-- Percentage Text --}}
+                                                        <text x="50" y="55" text-anchor="middle" font-size="16"
+                                                            font-weight="bold" fill="#374151"
+                                                            font-family="sans-serif">
+                                                            {{ round($pct) }}%
+                                                        </text>
+                                                    </svg>
+                                                </div>
+                                                <div
+                                                    style="margin-top: 10px; font-weight: 600; color: #4b5563; font-size: 14px;">
+                                                    {{ $sec['section_name'] }}
+                                                </div>
+                                            </td>
+                                        @endforeach
+                                    </tr>
+                                </table>
+                            </div>
                         @else
                             @foreach ($sections['chart'] as $sec)
                                 @php
@@ -1919,9 +2073,12 @@ $colors = [
                                     $percent = $clamped * 10; // 0-100
                                 @endphp
                                 <div class="barRow">
-                                    <div class="barLabel">{{ $sec['section_name'] }} ({{ $value }})</div>
+                                    <div class="barLabel">{{ $sec['section_name'] }}
+                                        ({{ $value }})
+                                    </div>
                                     <div class="barTrack">
-                                        <div class="barFill" style="width: {{ $percent }}%"></div>
+                                        <div class="barFill" style="width: {{ $percent }}%">
+                                        </div>
                                     </div>
                                 </div>
                             @endforeach
@@ -1938,8 +2095,10 @@ $colors = [
         <div class="h2-banner">
             <h2 class="h2-title">Integrated Analysis</h2>
         </div>
-        <p>{{ $student->name }} demonstrates high emotional stability, creativity, conscientiousness, and social
-            engagement. His preference for autonomy and long-term orientation aligns well with careers requiring deep
+        <p>{{ $student->name }} demonstrates high emotional stability, creativity, conscientiousness, and
+            social
+            engagement. His preference for autonomy and long-term orientation aligns well with careers requiring
+            deep
             engagement and self-direction.</p>
     </div>
     <div class="page-break"></div>
@@ -2138,9 +2297,11 @@ $colors = [
                 <h2 class="h2-title">Counselor's Remarks</h2>
             </div>
             <p>{{ $student->name }} exhibits a balanced and mature personality marked by self-awareness
-                and goal clarity. With strong cognitive strengths and humanistic values, {{ $student->name }} can grow
+                and goal clarity. With strong cognitive strengths and humanistic values, {{ $student->name }}
+                can grow
                 into
-                leadership roles in fields that demand both intellect and empathy. Encouraging exploratory learning and
+                leadership roles in fields that demand both intellect and empathy. Encouraging exploratory
+                learning and
                 mentorship will enrich this trajectory.</p>
         </div>
 
