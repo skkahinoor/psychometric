@@ -183,6 +183,58 @@
             background: #6366f1;
         }
 
+        /* Specialized Aptitude Chart styles - Premium Canva Look */
+        .aptitude-item {
+            margin-bottom: 30px;
+            width: 100%;
+            display: block;
+        }
+
+        .aptitude-label {
+            font-size: 15px;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        .aptitude-track {
+            height: 24px;
+            background: #52525b;
+            /* Dark grey track like Canva */
+            border-radius: 12px;
+            width: 450px;
+            overflow: visible;
+            position: relative;
+            margin: 0 auto;
+        }
+
+        .aptitude-fill {
+            height: 100%;
+            border-radius: 12px;
+            /* background is dynamic */
+        }
+
+        .aptitude-pill-wrap {
+            position: relative;
+            width: 450px;
+            height: 30px;
+            margin: 0 auto;
+        }
+
+        .aptitude-pill {
+            position: absolute;
+            top: 6px;
+            padding: 2px 12px;
+            border-radius: 10px;
+            color: #ffffff;
+            font-size: 11px;
+            font-weight: 800;
+            margin-left: -20px;
+            /* Helps center the pill under the end position */
+        }
+
+
         /* Header styles (updated to new theme) */
         .top-header {
             background: #ffffff;
@@ -1011,7 +1063,8 @@
 
             <div class="pdf-page">
                 @if ($domainDisplayName === 'INTEREST')
-                    <div class="h2-subbanner" style="background-image: url('{{ asset('images/subtitlebanner.png') }}');">
+                    <div class="h2-subbanner"
+                        style="background-image: url('{{ asset('images/subtitlebanner.png') }}');">
                         <div>
                             @php
                                 $cards = collect($sections['cards'] ?? []);
@@ -1038,7 +1091,8 @@
                             })
                             ->implode(', ');
                     @endphp
-                    <div class="h2-subbanner" style="background-image: url('{{ asset('images/subtitlebanner-red.png') }}');">
+                    <div class="h2-subbanner"
+                        style="background-image: url('{{ asset('images/subtitlebanner-red.png') }}');">
                         <div>
                             <div class="sub-text" style="color: #000; font-size: 13px; margin-top: 45px;">
                                 YOU HAVE A GOOD APTITUDE FOR<br>{{ $aptitudeNames }} HERE IS THE ELABORATION.
@@ -1217,7 +1271,7 @@
                                         </div>
 
                                     </td>
-                                    @elseif ($domainName === 'APTITUDE')
+                                @elseif ($domainName === 'APTITUDE')
                                     {{-- LEFT COLUMN --}}
                                     <td width="80" valign="top" style="border: none;">
                                         <div class="titlebackground"
@@ -1828,6 +1882,34 @@ $colors = [
                                         @endforeach
                                     </tr>
                                 </table>
+                            </div>
+                        @elseif ($domainDisplayName === 'APTITUDE')
+                            @php
+                                $aptitudeColors = ['#10b981', '#0ea5e9', '#facc15', '#fb923c', '#ef4444', '#6366f1'];
+                            @endphp
+                            <div style="text-align: center;">
+                                @foreach ($sections['chart'] as $i => $sec)
+                                    @php
+                                        $value = (float) ($sec['average_value'] ?? 0);
+                                        $clamped = max(0, min(10, $value));
+                                        $percent = $clamped * 10; // 0-100
+                                        $color = $aptitudeColors[$i % count($aptitudeColors)];
+                                    @endphp
+                                    <div class="aptitude-item">
+                                        <div class="aptitude-label">{{ $sec['section_name'] }}</div>
+                                        <div class="aptitude-track">
+                                            <div class="aptitude-fill"
+                                                style="width: {{ $percent }}%; background-color: {{ $color }};">
+                                            </div>
+                                        </div>
+                                        <div class="aptitude-pill-wrap">
+                                            <div class="aptitude-pill"
+                                                style="left: {{ $percent }}%; background-color: {{ $color }};">
+                                                {{ $percent }}%
+                                            </div>
+                                        </div>
+                                    </div>
+                                @endforeach
                             </div>
                         @else
                             @foreach ($sections['chart'] as $sec)
