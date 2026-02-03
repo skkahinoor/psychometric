@@ -1014,7 +1014,7 @@
                         style=" background-image: url('{{ asset('images/h2-bg.png') }}') !important;">
                         <h2 class="h2-title" style="margin-left: -5px !important;">{{ $domainDisplayName }}</h2>
                     </div>
-                @elseif ($domainDisplayName === 'PERSONALITY')
+                @elseif ($domainDisplayName === 'PERSONALITY' || $domainDisplayName === 'WORK VALUES')
                     <div class="h2-banner"
                         style=" background-image: url('{{ asset('images/h2-green.png') }}') !important;">
                         <h2 class="h2-title">{{ $domainDisplayName }}</h2>
@@ -1058,6 +1058,12 @@
                         <!-- CENTRAL IMAGE -->
                         <div class="intro-image-wrap">
                             <img src="{{ asset('images/Aptitude.png') }}" style="height: 160px; width: 650px;"
+                                alt="Psychometric Domains">
+                        </div>
+                    @elseif ($domainDisplayName === 'WORK VALUES')
+                        <!-- CENTRAL IMAGE -->
+                        <div class="intro-image-wrap">
+                            <img src="{{ asset('images/workimg.png') }}" style="height: 430px; width: 430px;"
                                 alt="Psychometric Domains">
                         </div>
                     @elseif ($domainDisplayName === 'LEARNING STYLE')
@@ -1191,7 +1197,7 @@
                                         </div>
 
                                     </td>
-                                @elseif ($domainDisplayName === 'PERSONALITY')
+                                @elseif ($domainDisplayName === 'PERSONALITY' || $domainDisplayName === 'WORK VALUES')
                                     {{-- LEFT COLUMN --}}
                                     <td width="80" valign="top" style="border: none;">
                                         <div class="titlebackground"
@@ -1474,7 +1480,7 @@
                                 Suggested Career Paths
                             </div>
                         </div>
-                    @elseif ($domainDisplayName === 'PERSONALITY')
+                    @elseif ($domainDisplayName === 'PERSONALITY' || $domainDisplayName === 'WORK VALUES')
                         <div class="h2-banner-suggested-career"
                             style=" background-image: url('{{ asset('images/careerpath-green.png') }}') !important;">
                             <div class="suggested-title-wrap" style="color: #000000 !important;">
@@ -1540,7 +1546,7 @@
                                                 {{ $sec['section_name'] }}
                                             </div>
                                         </div>
-                                    @elseif ($domainDisplayName === 'PERSONALITY')
+                                    @elseif ($domainDisplayName === 'PERSONALITY' || $domainDisplayName === 'WORK VALUES')
                                         <div class="career-category"
                                             style="background-image: url('{{ asset('images/career-folder-green.png') }}') !important;">
                                             <div class="career-category-title" style="color: #000000 !important;">
@@ -1583,7 +1589,7 @@
                                                                 {!! $categoryName !!}
                                                             </div>
                                                         @endforeach
-                                                    @elseif ($domainDisplayName === 'PERSONALITY')
+                                                    @elseif ($domainDisplayName === 'PERSONALITY' || $domainDisplayName === 'WORK VALUES')
                                                         <style>
                                                             .career-item:before {
                                                                 content: "■";
@@ -1656,7 +1662,7 @@
                                 Visual Representation of Your Score
                             </div>
                         </div>
-                    @elseif ($domainDisplayName === 'PERSONALITY')
+                    @elseif ($domainDisplayName === 'PERSONALITY' || $domainDisplayName === 'WORK VALUES')
                         <div class="visual-score-banner"
                             style=" background-image: url('{{ asset('images/visual-score-pill-green.png') }}') !important;">
                             <div class="visual-score-title">
@@ -2064,6 +2070,12 @@ $colors = [
                                         @endforeach
                                     </tr>
                                 </table>
+                            </div>
+                        @elseif ($domainDisplayName === 'WORK VALUES')
+                            <!-- CENTRAL IMAGE -->
+                            <div class="intro-image-wrap">
+                                <img src="{{ asset('images/workvisual.png') }}" style="height: 430px; width: 430px;"
+                                    alt="Psychometric Domains">
                             </div>
                         @else
                             @foreach ($sections['chart'] as $sec)
