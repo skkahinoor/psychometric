@@ -56,7 +56,7 @@
             height: 125px;
             width: 600px;
 
-            background-image: url('{{ asset('images/subtitlebanner.png') }}');
+            /* background-image: url('{{ asset('images/subtitlebanner.png') }}'); */
             background-repeat: no-repeat;
             background-position: left center;
             background-size: auto 100%;
@@ -1000,7 +1000,7 @@
                     @elseif ($domainDisplayName === 'APTITUDE')
                         <!-- CENTRAL IMAGE -->
                         <div class="intro-image-wrap">
-                            <img src="{{ asset('images/Aptitude.png') }}" style="height: 190px; width: 650px;"
+                            <img src="{{ asset('images/Aptitude.png') }}" style="height: 160px; width: 650px;"
                                 alt="Psychometric Domains">
                         </div>
                     @endif
@@ -1011,7 +1011,7 @@
 
             <div class="pdf-page">
                 @if ($domainDisplayName === 'INTEREST')
-                    <div class="h2-subbanner">
+                    <div class="h2-subbanner" style="background-image: url('{{ asset('images/subtitlebanner.png') }}');">
                         <div>
                             @php
                                 $cards = collect($sections['cards'] ?? []);
@@ -1028,6 +1028,23 @@
                             </div>
                         </div>
                     </div>
+                @elseif ($domainDisplayName === 'APTITUDE')
+                    @php
+                        $cards = collect($sections['cards'] ?? []);
+                        $count = $cards->count();
+                        $aptitudeNames = $cards
+                            ->map(function ($card) {
+                                return $card['section_name'];
+                            })
+                            ->implode(', ');
+                    @endphp
+                    <div class="h2-subbanner" style="background-image: url('{{ asset('images/subtitlebanner-red.png') }}');">
+                        <div>
+                            <div class="sub-text" style="color: #000; font-size: 13px; margin-top: 45px;">
+                                YOU HAVE A GOOD APTITUDE FOR<br>{{ $aptitudeNames }} HERE IS THE ELABORATION.
+                            </div>
+                        </div>
+                    </div>
                 @endif
 
                 {{-- new code --}}
@@ -1036,10 +1053,10 @@
                         <table width="100%" cellpadding="0" cellspacing="0">
                             <tr>
 
-                                @if ($domainDisplayName === 'INTEREST' && $domainDisplayName === 'LEARNING STYLE')
+                                @if ($domainDisplayName === 'INTEREST' || $domainDisplayName === 'LEARNING STYLE')
                                     {{-- LEFT COLUMN --}}
                                     <td width="80" valign="top" style="border: none;">
-                                        {{-- @if ($domainDisplayName === 'INTEREST' && $domainDisplayName === 'LEARNING STYLE') --}}
+                                        {{-- @if ($domainDisplayName === 'INTEREST' || $domainDisplayName === 'LEARNING STYLE') --}}
                                         <div class="titlebackground"
                                             style="background-image: url('{{ asset('images/sectionbackground.png') }}') !important;">
                                             <div class="interest-badge"
@@ -1200,6 +1217,57 @@
                                         </div>
 
                                     </td>
+                                    @elseif ($domainName === 'APTITUDE')
+                                    {{-- LEFT COLUMN --}}
+                                    <td width="80" valign="top" style="border: none;">
+                                        <div class="titlebackground"
+                                            style="background-image: url('{{ asset('images/sectionbackground-red.png') }}') !important;">
+                                            <div class="interest-badge"
+                                                style="margin-top: 12px; color: #000; margin-left: 46px; font-size: 11px;">
+                                                {{ str_pad($index + 1, 2, '0', STR_PAD_LEFT) }}
+                                            </div>
+                                            <div class="interest-title"
+                                                style="margin-top: 23px; margin-left: 55px; font-size: 15px;">
+                                                {{ $section['section_name'] }}
+                                            </div>
+                                        </div>
+
+                                        <div class="interest-score"
+                                            style="margin-top: 130px; margin-left: 30px;background: #b93430; ">
+                                            {{ $domainName === 'APTITUDE' ? 'TOTAL SCORE:' : 'AVERAGE SCORE:' }}
+                                            {{ $section['average'] }}
+                                        </div>
+
+                                    </td>
+
+                                    {{-- RIGHT COLUMN --}}
+                                    <td width="330" valign="top" style="border: none;">
+                                        <div class="interest-right" style="background: #ffb4af;">
+                                            <div>
+                                                {!! strip_tags($section['section_description']) !!}
+                                            </div>
+                                            @if ($domainName === 'OCEAN')
+                                                <div><strong>{{ $section['label'] }}:</strong>
+                                                    {{ $section['relevant_description'] }}
+                                                </div>
+                                            @elseif ($domainName === 'WORK VALUES')
+                                                @if ($section['label'] === 'Low')
+                                                    <div><strong>Low:</strong> {{ $section['low'] }}</div>
+                                                @elseif ($section['label'] === 'Mid')
+                                                    <div><strong>Mid:</strong> {{ $section['mid'] }}</div>
+                                                @elseif ($section['label'] === 'High')
+                                                    <div><strong>High:</strong> {{ $section['high'] }}</div>
+                                                @endif
+                                            @else
+                                                <div><strong>Key Traits:</strong> {{ $section['section_keytraits'] }}
+                                                </div>
+                                                <div><strong>Enjoys:</strong> {{ $section['section_enjoys'] }}</div>
+                                                <div><strong>Ideal Environments:</strong>
+                                                    {{ $section['section_idealenvironments'] }}
+                                                </div>
+                                            @endif
+                                        </div>
+                                    </td>
                                 @else
                                     {{-- LEFT COLUMN --}}
                                     <td width="80" valign="top" style="border: none;">
@@ -1267,7 +1335,7 @@
                     @php
                         $careerPathSections = $sections['cards'];
                     @endphp
-                    @if ($domainDisplayName === 'INTEREST' && $domainDisplayName === 'LEARNING STYLE')
+                    @if ($domainDisplayName === 'INTEREST' || $domainDisplayName === 'LEARNING STYLE')
                         <div class="h2-banner-suggested-career"
                             style=" background-image: url('{{ asset('images/careerpath.png') }}') !important;">
                             <div class="suggested-title-wrap">
@@ -1278,6 +1346,13 @@
                         <div class="h2-banner-suggested-career"
                             style=" background-image: url('{{ asset('images/careerpath-green.png') }}') !important;">
                             <div class="suggested-title-wrap" style="color: #000000 !important;">
+                                Suggested Career Paths
+                            </div>
+                        </div>
+                    @elseif ($domainDisplayName === 'APTITUDE')
+                        <div class="h2-banner-suggested-career"
+                            style=" background-image: url('{{ asset('images/careerpath-red.png') }}') !important;">
+                            <div class="suggested-title-wrap" style="color: #fff !important;">
                                 Suggested Career Paths
                             </div>
                         </div>
@@ -1326,7 +1401,7 @@
                                 <div class="career-block">
 
                                     <!-- Blue category header (folder style) -->
-                                    @if ($domainDisplayName === 'INTEREST' && $domainDisplayName === 'LEARNING STYLE')
+                                    @if ($domainDisplayName === 'INTEREST' || $domainDisplayName === 'LEARNING STYLE')
                                         <div class="career-category"
                                             style="background-image: url('{{ asset('images/career-folder.png') }}') !important;">
                                             <div class="career-category-title">
@@ -1337,6 +1412,13 @@
                                         <div class="career-category"
                                             style="background-image: url('{{ asset('images/career-folder-green.png') }}') !important;">
                                             <div class="career-category-title" style="color: #000000 !important;">
+                                                {{ $sec['section_name'] }}
+                                            </div>
+                                        </div>
+                                    @elseif ($domainDisplayName === 'APTITUDE')
+                                        <div class="career-category"
+                                            style="background-image: url('{{ asset('images/career-folder-red.png') }}') !important;">
+                                            <div class="career-category-title" style="color: #fff !important;">
                                                 {{ $sec['section_name'] }}
                                             </div>
                                         </div>
@@ -1385,6 +1467,22 @@
                                                                 {!! $categoryName !!}
                                                             </div>
                                                         @endforeach
+                                                    @elseif ($domainDisplayName === 'APTITUDE')
+                                                        <style>
+                                                            .career-item:before {
+                                                                content: "■";
+                                                                position: absolute;
+                                                                left: 0;
+                                                                top: 1px;
+                                                                font-size: 8px;
+                                                                color: #b93430 !important;
+                                                            }
+                                                        </style>
+                                                        @foreach ($col as $categoryName)
+                                                            <div class="career-item">
+                                                                {!! $categoryName !!}
+                                                            </div>
+                                                        @endforeach
                                                     @else
                                                         <style>
                                                             .career-item:before {
@@ -1419,7 +1517,7 @@
             {{-- Static bar chart (PDF-friendly, mirrors Result page data) --}}
             <div class="pdf-page careerpath-chart">
                 @if (!empty($sections['chart']))
-                    @if ($domainDisplayName === 'INTEREST' && $domainDisplayName === 'LEARNING STYLE')
+                    @if ($domainDisplayName === 'INTEREST' || $domainDisplayName === 'LEARNING STYLE')
                         <div class="visual-score-banner"
                             style=" background-image: url('{{ asset('images/visual-score-pill.png') }}') !important;">
                             <div class="visual-score-title">
@@ -1437,6 +1535,13 @@
                         <div class="visual-score-banner"
                             style=" background-image: url('{{ asset('images/visual-score-pill-cream.png') }}') !important;">
                             <div class="visual-score-title" style="color: #000000 !important;">
+                                Visual Representation of Your Score
+                            </div>
+                        </div>
+                    @elseif ($domainDisplayName === 'APTITUDE')
+                        <div class="visual-score-banner"
+                            style=" background-image: url('{{ asset('images/visual-score-pill-red.png') }}') !important;">
+                            <div class="visual-score-title" style="color: #000;">
                                 Visual Representation of Your Score
                             </div>
                         </div>
