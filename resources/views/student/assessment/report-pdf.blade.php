@@ -1060,6 +1060,12 @@
                             <img src="{{ asset('images/Aptitude.png') }}" style="height: 160px; width: 650px;"
                                 alt="Psychometric Domains">
                         </div>
+                    @elseif ($domainDisplayName === 'WORK VALUES')
+                        <!-- CENTRAL IMAGE -->
+                        <div class="intro-image-wrap">
+                            <img src="{{ asset('images/workimg.png') }}" style="height: 430px; width: 430px;"
+                                alt="Psychometric Domains">
+                        </div>
                     @elseif ($domainDisplayName === 'LEARNING STYLE')
                         <!-- CENTRAL IMAGE -->
                         <div class="intro-image-wrap">
@@ -2064,6 +2070,12 @@ $colors = [
                                         @endforeach
                                     </tr>
                                 </table>
+                            </div>
+                        @elseif ($domainDisplayName === 'WORK VALUES')
+                            <!-- CENTRAL IMAGE -->
+                            <div class="intro-image-wrap">
+                                <img src="{{ asset('images/workvisual.png') }}" style="height: 430px; width: 430px;"
+                                    alt="Psychometric Domains">
                             </div>
                         @else
                             @foreach ($sections['chart'] as $sec)
