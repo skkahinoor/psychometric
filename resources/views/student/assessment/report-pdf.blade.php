@@ -2162,7 +2162,7 @@ $colors = [
 
 
     <div class="pdf-page meta">
-        <div class="h2-banner" style=" background-image: url('{{ asset('images/visual-score-pill-cream.png') }}') !important;">
+        <div class="h2-banner" style=" background-image: url('{{ asset('images/cbg.png') }}') !important;">
             <h2 class="h2-title">Career Clusters with Total Weightage</h2>
         </div>
 
@@ -2216,43 +2216,22 @@ $colors = [
                 @if (isset($clusterKeys[$slot['rank_ix']]))
                     {{-- Title --}}
                     <div
-                        style="position: absolute; left: {{ $slot['left'] }}; top: 175px; width: 110px; text-align: center; font-size: 11px; font-weight: bold; color: {{ $slot['color'] }}; line-height: 1.2;">
+                        style="position: absolute; left: {{ $slot['left'] }}; top: 240px; width: 110px; text-align: center; font-size: 11px; font-weight: bold; color: {{ $slot['color'] }}; line-height: 1.2;">
                         {!! $clusterKeys[$slot['rank_ix']] !!}
                     </div>
                     {{-- Score --}}
                     <div
-                        style="position: absolute; left: {{ $slot['left'] }}; top: 322px; width: 110px; text-align: center; font-size: 22px; font-weight: 800; color: {{ $slot['color'] }};">
+                        style="position: absolute; left: {{ $slot['left'] }}; top: 308px; width: 110px; text-align: center; font-size: 22px; font-weight: 800; color: {{ $slot['color'] }};">
                         {{ round($clusterVals[$slot['rank_ix']]) }}
                     </div>
                 @endif
             @endforeach
         </div>
 
-        {{-- @if (!empty($overallCategoryWeightages))
-            <table>
-                <thead>
-                    <tr>
-                        <th>Career Cluster</th>
-                        <th style="text-align: right;">Total Weightage</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach ($overallCategoryWeightages as $catName => $totalWeighted)
-                        <tr>
-                            <td><strong>{!! $catName !!}</strong></td>
-                            <td style="text-align: right;">
-                                {{ rtrim(rtrim(number_format($totalWeighted, 2, '.', ''), '0'), '.') }}</td>
-                        </tr>
-                    @endforeach
-                </tbody>
-            </table>
-        @else
-            <div class="meta">No career clusters to display.</div>
-        @endif --}}
     </div>
     <div class="page-break"></div>
     <div class="pdf-page meta" style="margin-top: 10px;">
-        <div class="h2-banner">
+        <div class="h2-banner" style=" background-image: url('{{ asset('images/clusterbg.png') }}') !important;">
             <h2 class="h2-title">Customized Career Recommendation</h2>
         </div>
         @php
