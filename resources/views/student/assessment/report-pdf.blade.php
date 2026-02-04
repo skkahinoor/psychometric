@@ -114,8 +114,8 @@
         }
 
         .section {
-            border: 1px solid #e5e7eb;
-            border-radius: 6px;
+            /* border: 1px solid #e5e7eb; */
+            /* border-radius: 6px; */
             padding: 12px;
             margin-bottom: 8px;
         }
@@ -2104,7 +2104,7 @@ $colors = [
     <div class="page-break"></div>
 
         <div class="pdf-page ">
-            <div class="h2-banner" style=" background-image: url('{{ asset('images/h2-yellow.png') }}') !important;">
+            <div class="h2-banner" style=" background-image: url('{{ asset('images/h2-yellow.png') }}') !important;" style="height: 70px; width: 400px;">
                 <h2 class="h2-title" style="font-size: 11px;">Integrated Analysis</h2>
             </div>
            
@@ -2253,67 +2253,93 @@ $colors = [
                 $india_study_pathways = optional($categoryDetails->get($catName))->india_study_pathways;
                 $future_trends = optional($categoryDetails->get($catName))->future_trends;
             @endphp
-            <div class="section" style="margin-bottom: 10px;">
-                <div class="row" style="justify-content: space-between; align-items: center;">
-                    <div class="col" style="flex: none;">
-                        <h3 style="margin:0; font-size: 14px;">{!! $catName !!}@if (!empty($hook))
-                                - {!! $hook !!}
-                            @endif
-                        </h3>
-                    </div>
-
+            <div class="section" style="margin-bottom: 25px;">
+                {{-- Header with Background Image --}}
+                <div
+                    style="background-image: url('{{ asset('images/cbg.png') }}') !important; width: 400px; height: 50px; line-height: 40px; padding-left: 50px; margin-bottom: 15px; display: flex; align-items: center;">
+                    <h3
+                        style="margin:0; font-size: 13px; font-weight: 800; display: inline-block; vertical-align: middle; color: #000; padding-top: 6px;">
+                        {!! strtoupper($catName) !!}@if (!empty($hook))
+                            - {!! strtoupper($hook) !!}
+                        @endif
+                    </h3>
                 </div>
 
-                <div class="meta" style="margin-top: 6px;">
+                {{-- Content Area with Sidebar Line --}}
+                <div class="meta"
+                    style="margin-top: 6px; border-left: 2px solid #facc15; padding-left: 25px; margin-left: 30px;">
+
                     @if (!empty($what_is_it))
-                        <div style="margin-bottom:6px;">{!! $what_is_it !!}</div>
+                        <div style="margin-bottom:12px; position: relative;">
+                            <span
+                                style="font-size: 20px; line-height: 1; position: absolute; left: -31px; top: -3px; color: #1f2937;">•</span>
+                            <strong style="color:#000;">What is it:</strong> {!! $what_is_it !!}
+                        </div>
                     @endif
 
                     @if (!empty($roles))
-                        <div style="margin-bottom:6px;"><strong>Example Roles</strong> -
-                            <span>{!! $roles !!}</span>
+                        <div style="margin-bottom:12px; position: relative;">
+                            <span
+                                style="font-size: 20px; line-height: 1; position: absolute; left: -31px; top: -3px; color: #1f2937;">•</span>
+                            <strong style="color:#000;">Example Roles:</strong> {!! $roles !!}
                         </div>
                     @endif
 
                     @if (!empty($subjects))
-                        <div style="margin-bottom:6px;"><strong>Subjects</strong> -
-                            <span>{!! $subjects !!}</span>
+                        <div style="margin-bottom:12px; position: relative;">
+                            <span
+                                style="font-size: 20px; line-height: 1; position: absolute; left: -31px; top: -3px; color: #1f2937;">•</span>
+                            <strong style="color:#000;">Subjects:</strong> {!! $subjects !!}
                         </div>
                     @endif
 
                     @if (!empty($core_apptitudes_to_highlight))
-                        <div style="margin-bottom:6px;"><strong>Core aptitudes to highlight</strong> -
-                            <span>{!! $core_apptitudes_to_highlight !!}</span>
+                        <div style="margin-bottom:12px; position: relative;">
+                            <span
+                                style="font-size: 20px; line-height: 1; position: absolute; left: -31px; top: -3px; color: #1f2937;">•</span>
+                            <strong style="color:#000;">Core aptitudes to highlight:</strong>
+                            {!! $core_apptitudes_to_highlight !!}
                         </div>
                     @endif
 
                     @if (!empty($value_and_personality_edge))
-                        <div style="margin-bottom:6px;"><strong>Value and personality edge</strong> -
-                            <span>{!! $value_and_personality_edge !!}</span>
+                        <div style="margin-bottom:12px; position: relative;">
+                            <span
+                                style="font-size: 20px; line-height: 1; position: absolute; left: -31px; top: -3px; color: #1f2937;">•</span>
+                            <strong style="color:#000;">Value and personality edge:</strong>
+                            {!! $value_and_personality_edge !!}
                         </div>
                     @endif
 
                     @if (!empty($why_it_could_fit_you))
-                        <div style="margin-bottom:6px;"><strong>Why it could fit you</strong> -
-                            <span>{!! $why_it_could_fit_you !!}</span>
+                        <div style="margin-bottom:12px; position: relative;">
+                            <span
+                                style="font-size: 20px; line-height: 1; position: absolute; left: -31px; top: -3px; color: #1f2937;">•</span>
+                            <strong style="color:#000;">Why it could fit you:</strong> {!! $why_it_could_fit_you !!}
                         </div>
                     @endif
 
                     @if (!empty($early_actions))
-                        <div style="margin-bottom:6px;"><strong>Early actions</strong> -
-                            <span>{!! $early_actions !!}</span>
+                        <div style="margin-bottom:12px; position: relative;">
+                            <span
+                                style="font-size: 20px; line-height: 1; position: absolute; left: -31px; top: -3px; color: #1f2937;">•</span>
+                            <strong style="color:#000;">Early actions:</strong> {!! $early_actions !!}
                         </div>
                     @endif
 
                     @if (!empty($india_study_pathways))
-                        <div style="margin-bottom:6px;"><strong>India study pathways</strong> -
-                            <span>{!! $india_study_pathways !!}</span>
+                        <div style="margin-bottom:12px; position: relative;">
+                            <span
+                                style="font-size: 20px; line-height: 1; position: absolute; left: -31px; top: -3px; color: #1f2937;">•</span>
+                            <strong style="color:#000;">India study pathways:</strong> {!! $india_study_pathways !!}
                         </div>
                     @endif
 
                     @if (!empty($future_trends))
-                        <div style="margin-bottom:6px;"><strong>Future trends</strong> -
-                            <span>{!! $future_trends !!}</span>
+                        <div style="margin-bottom:12px; position: relative;">
+                            <span
+                                style="font-size: 20px; line-height: 1; position: absolute; left: -31px; top: -3px; color: #1f2937;">•</span>
+                            <strong style="color:#000;">Future trends:</strong> {!! $future_trends !!}
                         </div>
                     @endif
                 </div>
