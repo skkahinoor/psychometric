@@ -2216,12 +2216,12 @@ $colors = [
                 @if (isset($clusterKeys[$slot['rank_ix']]))
                     {{-- Title --}}
                     <div
-                        style="position: absolute; left: {{ $slot['left'] }}; top: 240px; width: 110px; text-align: center; font-size: 11px; font-weight: bold; color: {{ $slot['color'] }}; line-height: 1.2;">
+                        style="position: absolute; left: {{ $slot['left'] }}; top: 180px; width: 110px; text-align: center; font-size: 11px; font-weight: bold; color: {{ $slot['color'] }}; line-height: 1.2;">
                         {!! $clusterKeys[$slot['rank_ix']] !!}
                     </div>
                     {{-- Score --}}
                     <div
-                        style="position: absolute; left: {{ $slot['left'] }}; top: 208px; width: 110px; text-align: center; font-size: 22px; font-weight: 800; color: {{ $slot['color'] }};">
+                        style="position: absolute; left: {{ $slot['left'] }}; top: 275px; width: 110px; text-align: center; font-size: 22px; font-weight: 800; color: {{ $slot['color'] }};">
                         {{ round($clusterVals[$slot['rank_ix']]) }}
                     </div>
                 @endif
@@ -2256,9 +2256,9 @@ $colors = [
             <div class="section" style="margin-bottom: 25px;">
                 {{-- Header with Background Image --}}
                 <div
-                    style="background-image: url('{{ asset('images/cbg.png') }}') !important; width: 400px; height: 50px; padding-left: 50px; margin-bottom: 20px; display: flex; align-items: center;">
+                    style="background-image: url('{{ asset('images/cbg.png') }}') !important; background-size: 100% 100%; width: 400px; height: 100px; padding-left: 60px; margin-bottom: 5px; display: flex; align-items: center;">
                     <h3
-                        style="margin:0; font-size: 13px; font-weight: 800; display: inline-block; vertical-align: middle; color: #000; padding-top: 6px;">
+                        style="margin:0; font-size: 14px; font-weight: 800; color: #000; padding-top: 4px;">
                         {!! strtoupper($catName) !!}@if (!empty($hook))
                             - {!! strtoupper($hook) !!}
                         @endif
@@ -2267,7 +2267,7 @@ $colors = [
 
                 {{-- Content Area with Sidebar Line --}}
                 <div class="meta"
-                    style="margin-top: 6px; border-left: 2px solid #facc15; padding-left: 25px; margin-left: 30px;">
+                    style="margin-top: 0px; border-left: 3px solid #facc15; padding-left: 20px; margin-left: 23px;">
 
                     @if (!empty($what_is_it))
                         <div style="margin-bottom:12px; position: relative;">
