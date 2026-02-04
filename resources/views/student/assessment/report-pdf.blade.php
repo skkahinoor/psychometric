@@ -2103,17 +2103,20 @@ $colors = [
 
     <div class="page-break"></div>
 
-    <div class="pdf-page ">
-        <div class="h2-banner">
-            <h2 class="h2-title">Integrated Analysis</h2>
+        <div class="pdf-page ">
+            <div class="h2-banner" style=" background-image: url('{{ asset('images/h2-yellow.png') }}') !important;">
+                <h2 class="h2-title" style="font-size: 11px;">Integrated Analysis</h2>
+            </div>
+           
+            <p>{{ $student->name }} demonstrates high emotional stability, creativity, conscientiousness, and
+                social
+                engagement. His preference for autonomy and long-term orientation aligns well with careers requiring
+                deep
+                engagement and self-direction.</p>
         </div>
-        <p>{{ $student->name }} demonstrates high emotional stability, creativity, conscientiousness, and
-            social
-            engagement. His preference for autonomy and long-term orientation aligns well with careers requiring
-            deep
-            engagement and self-direction.</p>
-    </div>
     <div class="page-break"></div>
+
+
     @php
         $allCategoryCountsBySection = [];
         foreach ($groupedResults as $domainName => $sections) {
@@ -2159,9 +2162,17 @@ $colors = [
 
 
     <div class="pdf-page meta">
-        <div class="h2-banner">
+        <div class="h2-banner" style=" background-image: url('{{ asset('images/visual-score-pill-cream.png') }}') !important;">
             <h2 class="h2-title">Career Clusters with Total Weightage</h2>
         </div>
+
+         <!-- CENTRAL IMAGE -->
+            <div class="intro-image-wrap">
+                <img src="{{ asset('images/cluster.png') }}" style="height: 430px; width: 430px;"
+                    alt="Psychometric Domains">
+            </div>
+
+            
         @php
             // Group previously computed counts by domain
             $repeatedByDomain = collect($allCategoryCountsBySection ?? [])->groupBy('domain');
