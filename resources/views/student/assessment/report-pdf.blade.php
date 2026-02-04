@@ -2235,11 +2235,12 @@ $colors = [
             <h2 class="h2-title">Customized Career Recommendation</h2>
         </div>
         @php
-            $categoryDetails = \App\Models\CareerCategory::whereIn('name', array_keys($overallCategoryWeightages ?? []))
+            $top3Recs = array_slice($overallCategoryWeightages ?? [], 0, 3, true);
+            $categoryDetails = \App\Models\CareerCategory::whereIn('name', array_keys($top3Recs))
                 ->get()
                 ->keyBy('name');
         @endphp
-        @foreach ($overallCategoryWeightages ?? [] as $catName => $totalWeighted)
+        @foreach ($top3Recs as $catName => $totalWeighted)
             @php
                 $roles = optional($categoryDetails->get($catName))->example_roles;
                 $hook = optional($categoryDetails->get($catName))->hook;
