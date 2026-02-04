@@ -2104,7 +2104,7 @@ $colors = [
     <div class="page-break"></div>
 
         <div class="pdf-page ">
-            <div class="h2-banner" style=" background-image: url('{{ asset('images/h2-yellow.png') }}') !important;" style="height: 70px; width: 400px;">
+            <div class="h2-banner" style=" background-image: url('{{ asset('images/h2-yellow.png') }}') !important;" style="height: 80px; width: 500px;">
                 <h2 class="h2-title" style="font-size: 11px;">Integrated Analysis</h2>
             </div>
            
@@ -2162,7 +2162,7 @@ $colors = [
 
 
     <div class="pdf-page meta">
-        <div class="h2-banner" style=" background-image: url('{{ asset('images/cbg.png') }}') !important;">
+        <div class="h2-banner" style=" background-image: url('{{ asset('images/cbg.png') }}') !important;" style="height: 80px !important; width: 500px !important;">
             <h2 class="h2-title">Career Clusters with Total Weightage</h2>
         </div>
 
@@ -2221,7 +2221,7 @@ $colors = [
                     </div>
                     {{-- Score --}}
                     <div
-                        style="position: absolute; left: {{ $slot['left'] }}; top: 308px; width: 110px; text-align: center; font-size: 22px; font-weight: 800; color: {{ $slot['color'] }};">
+                        style="position: absolute; left: {{ $slot['left'] }}; top: 208px; width: 110px; text-align: center; font-size: 22px; font-weight: 800; color: {{ $slot['color'] }};">
                         {{ round($clusterVals[$slot['rank_ix']]) }}
                     </div>
                 @endif
@@ -2231,7 +2231,7 @@ $colors = [
     </div>
     <div class="page-break"></div>
     <div class="pdf-page meta" style="margin-top: 10px;">
-        <div class="h2-banner" style=" background-image: url('{{ asset('images/clusterbg.png') }}') !important;">
+        <div class="h2-banner" style=" background-image: url('{{ asset('images/clusterbg.png') }}') !important;" style="height: 80px !important; width: 500px !important;">
             <h2 class="h2-title">Customized Career Recommendation</h2>
         </div>
         @php
@@ -2256,7 +2256,7 @@ $colors = [
             <div class="section" style="margin-bottom: 25px;">
                 {{-- Header with Background Image --}}
                 <div
-                    style="background-image: url('{{ asset('images/cbg.png') }}') !important; width: 400px; height: 50px; line-height: 40px; padding-left: 50px; margin-bottom: 15px; display: flex; align-items: center;">
+                    style="background-image: url('{{ asset('images/cbg.png') }}') !important; width: 400px; height: 50px; padding-left: 50px; margin-bottom: 20px; display: flex; align-items: center;">
                     <h3
                         style="margin:0; font-size: 13px; font-weight: 800; display: inline-block; vertical-align: middle; color: #000; padding-top: 6px;">
                         {!! strtoupper($catName) !!}@if (!empty($hook))
