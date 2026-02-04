@@ -2166,13 +2166,6 @@ $colors = [
             <h2 class="h2-title">Career Clusters with Total Weightage</h2>
         </div>
 
-         <!-- CENTRAL IMAGE -->
-            <div class="intro-image-wrap">
-                <img src="{{ asset('images/cluster.png') }}" style="height: 430px; width: 430px;"
-                    alt="Psychometric Domains">
-            </div>
-
-            
         @php
             // Group previously computed counts by domain
             $repeatedByDomain = collect($allCategoryCountsBySection ?? [])->groupBy('domain');
@@ -2199,9 +2192,43 @@ $colors = [
             }
 
             arsort($overallCategoryWeightages);
+
+            // Get Top 3
+            $top3Clusters = array_slice($overallCategoryWeightages, 0, 3, true);
+            $clusterKeys = array_keys($top3Clusters); // [0=>Rank1Name, 1=>Rank2Name, 2=>Rank3Name]
+            $clusterVals = array_values($top3Clusters);
+
+            // Define slots: [IndexInTop3, LeftPos] -> Podium Order: Left(Rank 2), Center(Rank 1), Right(Rank 3)
+            // Indices: 0 is Rank1 (Max), 1 is Rank2, 2 is Rank3
+            $slots = [
+                ['rank_ix' => 1, 'left' => '25px', 'color' => '#000'],   // Left (2nd Best)
+                ['rank_ix' => 0, 'left' => '155px', 'color' => '#000'],  // Center (1st Best)
+                ['rank_ix' => 2, 'left' => '290px', 'color' => '#000']   // Right (3rd Best)
+            ];
         @endphp
 
-        @if (!empty($overallCategoryWeightages))
+        <!-- CENTRAL IMAGE WITH OVERLAY -->
+        <div class="intro-image-wrap" style="position: relative; width: 430px; margin: 0 auto; height: 430px;">
+            <img src="{{ asset('images/cluster.png') }}" style="height: 430px; width: 430px;"
+                alt="Psychometric Domains">
+
+            @foreach ($slots as $slot)
+                @if (isset($clusterKeys[$slot['rank_ix']]))
+                    {{-- Title --}}
+                    <div
+                        style="position: absolute; left: {{ $slot['left'] }}; top: 175px; width: 110px; text-align: center; font-size: 11px; font-weight: bold; color: {{ $slot['color'] }}; line-height: 1.2;">
+                        {!! $clusterKeys[$slot['rank_ix']] !!}
+                    </div>
+                    {{-- Score --}}
+                    <div
+                        style="position: absolute; left: {{ $slot['left'] }}; top: 322px; width: 110px; text-align: center; font-size: 22px; font-weight: 800; color: {{ $slot['color'] }};">
+                        {{ round($clusterVals[$slot['rank_ix']]) }}
+                    </div>
+                @endif
+            @endforeach
+        </div>
+
+        {{-- @if (!empty($overallCategoryWeightages))
             <table>
                 <thead>
                     <tr>
@@ -2221,7 +2248,7 @@ $colors = [
             </table>
         @else
             <div class="meta">No career clusters to display.</div>
-        @endif
+        @endif --}}
     </div>
     <div class="page-break"></div>
     <div class="pdf-page meta" style="margin-top: 10px;">
