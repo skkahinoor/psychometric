@@ -2216,7 +2216,7 @@ $colors = [
                 @if (isset($clusterKeys[$slot['rank_ix']]))
                     {{-- Title --}}
                     <div
-                        style="position: absolute; left: {{ $slot['left'] }}; top: 180px; width: 110px; text-align: center; font-size: 11px; font-weight: bold; color: {{ $slot['color'] }}; line-height: 1.2;">
+                        style="position: absolute; left: {{ $slot['left'] }}; top: 200px; width: 110px; text-align: center; font-size: 11px; font-weight: bold; color: {{ $slot['color'] }}; line-height: 1.2;">
                         {!! $clusterKeys[$slot['rank_ix']] !!}
                     </div>
                     {{-- Score --}}
