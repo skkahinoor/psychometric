@@ -114,8 +114,8 @@
         }
 
         .section {
-            border: 1px solid #e5e7eb;
-            border-radius: 6px;
+            /* border: 1px solid #e5e7eb; */
+            /* border-radius: 6px; */
             padding: 12px;
             margin-bottom: 8px;
         }
@@ -2103,17 +2103,20 @@ $colors = [
 
     <div class="page-break"></div>
 
-    <div class="pdf-page ">
-        <div class="h2-banner">
-            <h2 class="h2-title">Integrated Analysis</h2>
+        <div class="pdf-page ">
+            <div class="h2-banner" style=" background-image: url('{{ asset('images/h2-yellow.png') }}') !important;" style="height: 80px; width: 500px;">
+                <h2 class="h2-title" style="font-size: 11px;">Integrated Analysis</h2>
+            </div>
+           
+            <p>{{ $student->name }} demonstrates high emotional stability, creativity, conscientiousness, and
+                social
+                engagement. His preference for autonomy and long-term orientation aligns well with careers requiring
+                deep
+                engagement and self-direction.</p>
         </div>
-        <p>{{ $student->name }} demonstrates high emotional stability, creativity, conscientiousness, and
-            social
-            engagement. His preference for autonomy and long-term orientation aligns well with careers requiring
-            deep
-            engagement and self-direction.</p>
-    </div>
     <div class="page-break"></div>
+
+
     @php
         $allCategoryCountsBySection = [];
         foreach ($groupedResults as $domainName => $sections) {
@@ -2159,9 +2162,10 @@ $colors = [
 
 
     <div class="pdf-page meta">
-        <div class="h2-banner">
+        <div class="h2-banner" style=" background-image: url('{{ asset('images/cbg.png') }}') !important;" style="height: 80px !important; width: 500px !important;">
             <h2 class="h2-title">Career Clusters with Total Weightage</h2>
         </div>
+
         @php
             // Group previously computed counts by domain
             $repeatedByDomain = collect($allCategoryCountsBySection ?? [])->groupBy('domain');
@@ -2188,116 +2192,159 @@ $colors = [
             }
 
             arsort($overallCategoryWeightages);
+
+            // Get Top 3
+            $top3Clusters = array_slice($overallCategoryWeightages, 0, 3, true);
+            $clusterKeys = array_keys($top3Clusters); // [0=>Rank1Name, 1=>Rank2Name, 2=>Rank3Name]
+            $clusterVals = array_values($top3Clusters);
+
+            // Define slots: [IndexInTop3, LeftPos] -> Podium Order: Left(Rank 2), Center(Rank 1), Right(Rank 3)
+            // Indices: 0 is Rank1 (Max), 1 is Rank2, 2 is Rank3
+            $slots = [
+                ['rank_ix' => 1, 'left' => '25px', 'color' => '#000'],   // Left (2nd Best)
+                ['rank_ix' => 0, 'left' => '155px', 'color' => '#000'],  // Center (1st Best)
+                ['rank_ix' => 2, 'left' => '290px', 'color' => '#000']   // Right (3rd Best)
+            ];
         @endphp
 
-        @if (!empty($overallCategoryWeightages))
-            <table>
-                <thead>
-                    <tr>
-                        <th>Career Cluster</th>
-                        <th style="text-align: right;">Total Weightage</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach ($overallCategoryWeightages as $catName => $totalWeighted)
-                        <tr>
-                            <td><strong>{!! $catName !!}</strong></td>
-                            <td style="text-align: right;">
-                                {{ rtrim(rtrim(number_format($totalWeighted, 2, '.', ''), '0'), '.') }}</td>
-                        </tr>
-                    @endforeach
-                </tbody>
-            </table>
-        @else
-            <div class="meta">No career clusters to display.</div>
-        @endif
+        <!-- CENTRAL IMAGE WITH OVERLAY -->
+        <div class="intro-image-wrap" style="position: relative; width: 430px; margin: 0 auto; height: 430px;">
+            <img src="{{ asset('images/cluster.png') }}" style="height: 430px; width: 430px;"
+                alt="Psychometric Domains">
+
+            @foreach ($slots as $slot)
+                @if (isset($clusterKeys[$slot['rank_ix']]))
+                    {{-- Title --}}
+                    <div
+                        style="position: absolute; left: {{ $slot['left'] }}; top: 200px; width: 110px; text-align: center; font-size: 11px; font-weight: bold; color: {{ $slot['color'] }}; line-height: 1.2;">
+                        {!! $clusterKeys[$slot['rank_ix']] !!}
+                    </div>
+                    {{-- Score --}}
+                    <div
+                        style="position: absolute; left: {{ $slot['left'] }}; top: 275px; width: 110px; text-align: center; font-size: 22px; font-weight: 800; color: {{ $slot['color'] }};">
+                        {{ round($clusterVals[$slot['rank_ix']]) }}
+                    </div>
+                @endif
+            @endforeach
+        </div>
+
     </div>
     <div class="page-break"></div>
     <div class="pdf-page meta" style="margin-top: 10px;">
-        <div class="h2-banner">
+        <div class="h2-banner" style=" background-image: url('{{ asset('images/clusterbg.png') }}') !important;" style="height: 80px !important; width: 500px !important;">
             <h2 class="h2-title">Customized Career Recommendation</h2>
         </div>
         @php
-            $categoryDetails = \App\Models\CareerCategory::whereIn('name', array_keys($overallCategoryWeightages ?? []))
+            $top3Recs = array_slice($overallCategoryWeightages ?? [], 0, 3, true);
+            $categoryDetails = \App\Models\CareerCategory::whereIn('name', array_keys($top3Recs))
                 ->get()
                 ->keyBy('name');
         @endphp
-        @foreach ($overallCategoryWeightages ?? [] as $catName => $totalWeighted)
-            @php
-                $roles = optional($categoryDetails->get($catName))->example_roles;
-                $hook = optional($categoryDetails->get($catName))->hook;
-                $what_is_it = optional($categoryDetails->get($catName))->what_is_it;
-                $subjects = optional($categoryDetails->get($catName))->subjects;
-                $core_apptitudes_to_highlight = optional($categoryDetails->get($catName))->core_apptitudes_to_highlight;
-                $value_and_personality_edge = optional($categoryDetails->get($catName))->value_and_personality_edge;
-                $why_it_could_fit_you = optional($categoryDetails->get($catName))->why_it_could_fit_you;
-                $early_actions = optional($categoryDetails->get($catName))->early_actions;
-                $india_study_pathways = optional($categoryDetails->get($catName))->india_study_pathways;
-                $future_trends = optional($categoryDetails->get($catName))->future_trends;
-            @endphp
-            <div class="section" style="margin-bottom: 10px;">
-                <div class="row" style="justify-content: space-between; align-items: center;">
-                    <div class="col" style="flex: none;">
-                        <h3 style="margin:0; font-size: 14px;">{!! $catName !!}@if (!empty($hook))
-                                - {!! $hook !!}
+        @foreach ($top3Recs as $catName => $totalWeighted)
+            <div class="page-break"></div>
+            <div class="pdf-page">
+                @php
+                    $roles = optional($categoryDetails->get($catName))->example_roles;
+                    $hook = optional($categoryDetails->get($catName))->hook;
+                    $what_is_it = optional($categoryDetails->get($catName))->what_is_it;
+                    $subjects = optional($categoryDetails->get($catName))->subjects;
+                    $core_apptitudes_to_highlight = optional($categoryDetails->get($catName))->core_apptitudes_to_highlight;
+                    $value_and_personality_edge = optional($categoryDetails->get($catName))->value_and_personality_edge;
+                    $why_it_could_fit_you = optional($categoryDetails->get($catName))->why_it_could_fit_you;
+                    $early_actions = optional($categoryDetails->get($catName))->early_actions;
+                    $india_study_pathways = optional($categoryDetails->get($catName))->india_study_pathways;
+                    $future_trends = optional($categoryDetails->get($catName))->future_trends;
+                @endphp
+                <div class="section" style="margin-bottom: 25px;">
+                    {{-- Header with Background Image --}}
+                    <div
+                        style="background-image: url('{{ asset('images/cbg.png') }}') !important; background-size: 100% 100%; width: 400px; height: 100px; padding-left: 60px; margin-bottom: 5px; display: flex; align-items: center;">
+                        <h3
+                            style="margin:0; font-size: 14px; font-weight: 800; color: #000; padding-top: 4px;">
+                            {!! strtoupper($catName) !!}@if (!empty($hook))
+                                - {!! strtoupper($hook) !!}
                             @endif
                         </h3>
                     </div>
 
-                </div>
+                    {{-- Content Area with Sidebar Line --}}
+                    <div class="meta"
+                        style="margin-top: 0px; border-left: 3px solid #facc15; padding-left: 20px; margin-left: 23px;">
 
-                <div class="meta" style="margin-top: 6px;">
-                    @if (!empty($what_is_it))
-                        <div style="margin-bottom:6px;">{!! $what_is_it !!}</div>
-                    @endif
+                        @if (!empty($what_is_it))
+                            <div style="margin-bottom:12px; position: relative;">
+                                <span
+                                    style="font-size: 20px; line-height: 1; position: absolute; left: -31px; top: -3px; color: #1f2937;">•</span>
+                                <strong style="color:#000;">What is it:</strong> {!! $what_is_it !!}
+                            </div>
+                        @endif
 
-                    @if (!empty($roles))
-                        <div style="margin-bottom:6px;"><strong>Example Roles</strong> -
-                            <span>{!! $roles !!}</span>
-                        </div>
-                    @endif
+                        @if (!empty($roles))
+                            <div style="margin-bottom:12px; position: relative;">
+                                <span
+                                    style="font-size: 20px; line-height: 1; position: absolute; left: -31px; top: -3px; color: #1f2937;">•</span>
+                                <strong style="color:#000;">Example Roles:</strong> {!! $roles !!}
+                            </div>
+                        @endif
 
-                    @if (!empty($subjects))
-                        <div style="margin-bottom:6px;"><strong>Subjects</strong> -
-                            <span>{!! $subjects !!}</span>
-                        </div>
-                    @endif
+                        @if (!empty($subjects))
+                            <div style="margin-bottom:12px; position: relative;">
+                                <span
+                                    style="font-size: 20px; line-height: 1; position: absolute; left: -31px; top: -3px; color: #1f2937;">•</span>
+                                <strong style="color:#000;">Subjects:</strong> {!! $subjects !!}
+                            </div>
+                        @endif
 
-                    @if (!empty($core_apptitudes_to_highlight))
-                        <div style="margin-bottom:6px;"><strong>Core aptitudes to highlight</strong> -
-                            <span>{!! $core_apptitudes_to_highlight !!}</span>
-                        </div>
-                    @endif
+                        @if (!empty($core_apptitudes_to_highlight))
+                            <div style="margin-bottom:12px; position: relative;">
+                                <span
+                                    style="font-size: 20px; line-height: 1; position: absolute; left: -31px; top: -3px; color: #1f2937;">•</span>
+                                <strong style="color:#000;">Core aptitudes to highlight:</strong>
+                                {!! $core_apptitudes_to_highlight !!}
+                            </div>
+                        @endif
 
-                    @if (!empty($value_and_personality_edge))
-                        <div style="margin-bottom:6px;"><strong>Value and personality edge</strong> -
-                            <span>{!! $value_and_personality_edge !!}</span>
-                        </div>
-                    @endif
+                        @if (!empty($value_and_personality_edge))
+                            <div style="margin-bottom:12px; position: relative;">
+                                <span
+                                    style="font-size: 20px; line-height: 1; position: absolute; left: -31px; top: -3px; color: #1f2937;">•</span>
+                                <strong style="color:#000;">Value and personality edge:</strong>
+                                {!! $value_and_personality_edge !!}
+                            </div>
+                        @endif
 
-                    @if (!empty($why_it_could_fit_you))
-                        <div style="margin-bottom:6px;"><strong>Why it could fit you</strong> -
-                            <span>{!! $why_it_could_fit_you !!}</span>
-                        </div>
-                    @endif
+                        @if (!empty($why_it_could_fit_you))
+                            <div style="margin-bottom:12px; position: relative;">
+                                <span
+                                    style="font-size: 20px; line-height: 1; position: absolute; left: -31px; top: -3px; color: #1f2937;">•</span>
+                                <strong style="color:#000;">Why it could fit you:</strong> {!! $why_it_could_fit_you !!}
+                            </div>
+                        @endif
 
-                    @if (!empty($early_actions))
-                        <div style="margin-bottom:6px;"><strong>Early actions</strong> -
-                            <span>{!! $early_actions !!}</span>
-                        </div>
-                    @endif
+                        @if (!empty($early_actions))
+                            <div style="margin-bottom:12px; position: relative;">
+                                <span
+                                    style="font-size: 20px; line-height: 1; position: absolute; left: -31px; top: -3px; color: #1f2937;">•</span>
+                                <strong style="color:#000;">Early actions:</strong> {!! $early_actions !!}
+                            </div>
+                        @endif
 
-                    @if (!empty($india_study_pathways))
-                        <div style="margin-bottom:6px;"><strong>India study pathways</strong> -
-                            <span>{!! $india_study_pathways !!}</span>
-                        </div>
-                    @endif
+                        @if (!empty($india_study_pathways))
+                            <div style="margin-bottom:12px; position: relative;">
+                                <span
+                                    style="font-size: 20px; line-height: 1; position: absolute; left: -31px; top: -3px; color: #1f2937;">•</span>
+                                <strong style="color:#000;">India study pathways:</strong> {!! $india_study_pathways !!}
+                            </div>
+                        @endif
 
-                    @if (!empty($future_trends))
-                        <div style="margin-bottom:6px;"><strong>Future trends</strong> -
-                            <span>{!! $future_trends !!}</span>
-                        </div>
-                    @endif
+                        @if (!empty($future_trends))
+                            <div style="margin-bottom:12px; position: relative;">
+                                <span
+                                    style="font-size: 20px; line-height: 1; position: absolute; left: -31px; top: -3px; color: #1f2937;">•</span>
+                                <strong style="color:#000;">Future trends:</strong> {!! $future_trends !!}
+                            </div>
+                        @endif
+                    </div>
                 </div>
             </div>
         @endforeach
