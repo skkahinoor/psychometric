@@ -2103,17 +2103,18 @@ $colors = [
 
     <div class="page-break"></div>
 
-        <div class="pdf-page ">
-            <div class="h2-banner" style=" background-image: url('{{ asset('images/h2-yellow.png') }}') !important;" style="height: 80px; width: 500px;">
-                <h2 class="h2-title" style="font-size: 11px;">Integrated Analysis</h2>
-            </div>
-           
-            <p>{{ $student->name }} demonstrates high emotional stability, creativity, conscientiousness, and
-                social
-                engagement. His preference for autonomy and long-term orientation aligns well with careers requiring
-                deep
-                engagement and self-direction.</p>
+    <div class="pdf-page ">
+        <div class="h2-banner" style=" background-image: url('{{ asset('images/h2-yellow.png') }}') !important;"
+            style="height: 80px; width: 500px;">
+            <h2 class="h2-title" style="font-size: 11px;">Integrated Analysis</h2>
         </div>
+
+        <p>{{ $student->name }} demonstrates high emotional stability, creativity, conscientiousness, and
+            social
+            engagement. His preference for autonomy and long-term orientation aligns well with careers requiring
+            deep
+            engagement and self-direction.</p>
+    </div>
     <div class="page-break"></div>
 
 
@@ -2162,7 +2163,8 @@ $colors = [
 
 
     <div class="pdf-page meta">
-        <div class="h2-banner" style=" background-image: url('{{ asset('images/cbg.png') }}') !important;" style="height: 80px !important; width: 500px !important;">
+        <div class="h2-banner" style=" background-image: url('{{ asset('images/cbg.png') }}') !important;"
+            style="height: 80px !important; width: 500px !important;">
             <h2 class="h2-title">Career Clusters with Total Weightage</h2>
         </div>
 
@@ -2201,9 +2203,9 @@ $colors = [
             // Define slots: [IndexInTop3, LeftPos] -> Podium Order: Left(Rank 2), Center(Rank 1), Right(Rank 3)
             // Indices: 0 is Rank1 (Max), 1 is Rank2, 2 is Rank3
             $slots = [
-                ['rank_ix' => 1, 'left' => '25px', 'color' => '#000'],   // Left (2nd Best)
-                ['rank_ix' => 0, 'left' => '155px', 'color' => '#000'],  // Center (1st Best)
-                ['rank_ix' => 2, 'left' => '290px', 'color' => '#000']   // Right (3rd Best)
+                ['rank_ix' => 1, 'left' => '25px', 'color' => '#000'], // Left (2nd Best)
+                ['rank_ix' => 0, 'left' => '155px', 'color' => '#000'], // Center (1st Best)
+                ['rank_ix' => 2, 'left' => '290px', 'color' => '#000'], // Right (3rd Best)
             ];
         @endphp
 
@@ -2231,24 +2233,26 @@ $colors = [
     </div>
     <div class="page-break"></div>
     <div class="pdf-page meta" style="margin-top: 10px;">
-        <div class="h2-banner" style=" background-image: url('{{ asset('images/clusterbg.png') }}') !important;" style="height: 80px !important; width: 500px !important;">
+        <div class="h2-banner" style=" background-image: url('{{ asset('images/clusterbg.png') }}') !important;"
+            style="height: 80px !important; width: 500px !important;">
             <h2 class="h2-title">Customized Career Recommendation</h2>
         </div>
         @php
             $top3Recs = array_slice($overallCategoryWeightages ?? [], 0, 3, true);
-            $categoryDetails = \App\Models\CareerCategory::whereIn('name', array_keys($top3Recs))
-                ->get()
-                ->keyBy('name');
+            $categoryDetails = \App\Models\CareerCategory::whereIn('name', array_keys($top3Recs))->get()->keyBy('name');
         @endphp
         @foreach ($top3Recs as $catName => $totalWeighted)
-            <div class="page-break"></div>
+            @if (!$loop->first)
+                <div class="page-break"></div>
+            @endif
             <div class="pdf-page">
                 @php
                     $roles = optional($categoryDetails->get($catName))->example_roles;
                     $hook = optional($categoryDetails->get($catName))->hook;
                     $what_is_it = optional($categoryDetails->get($catName))->what_is_it;
                     $subjects = optional($categoryDetails->get($catName))->subjects;
-                    $core_apptitudes_to_highlight = optional($categoryDetails->get($catName))->core_apptitudes_to_highlight;
+                    $core_apptitudes_to_highlight = optional($categoryDetails->get($catName))
+                        ->core_apptitudes_to_highlight;
                     $value_and_personality_edge = optional($categoryDetails->get($catName))->value_and_personality_edge;
                     $why_it_could_fit_you = optional($categoryDetails->get($catName))->why_it_could_fit_you;
                     $early_actions = optional($categoryDetails->get($catName))->early_actions;
@@ -2259,8 +2263,7 @@ $colors = [
                     {{-- Header with Background Image --}}
                     <div
                         style="background-image: url('{{ asset('images/cbg.png') }}') !important; background-size: 100% 100%; width: 400px; height: 100px; padding-left: 60px; margin-bottom: 5px; display: flex; align-items: center;">
-                        <h3
-                            style="margin:0; font-size: 14px; font-weight: 800; color: #000; padding-top: 4px;">
+                        <h3 style="margin:0; font-size: 14px; font-weight: 800; color: #000; padding-top: 4px;">
                             {!! strtoupper($catName) !!}@if (!empty($hook))
                                 - {!! strtoupper($hook) !!}
                             @endif
