@@ -2232,10 +2232,10 @@ $colors = [
 
     </div>
     <div class="page-break"></div>
-    <div class="pdf-page meta" style="margin-top: 10px;">
-        <div class="h2-banner" style=" background-image: url('{{ asset('images/clusterbg.png') }}') !important;"
-            style="height: 80px !important; width: 500px !important;">
-            <h2 class="h2-title">Customized Career Recommendation</h2>
+    <div class="pdf-page meta" style="margin-top: 0px;">
+        <div class="h2-banner"
+            style=" background-image: url('{{ asset('images/clusterbg.png') }}') !important; height: 80px !important; width: 500px !important; margin-bottom: 0px;">
+            <h2 class="h2-title" style="color: #000;">Customized Career<br>Recommendation</h2>
         </div>
         @php
             $top3Recs = array_slice($overallCategoryWeightages ?? [], 0, 3, true);
@@ -2272,7 +2272,7 @@ $colors = [
 
                     {{-- Content Area with Sidebar Line --}}
                     <div class="meta"
-                        style="margin-top: 0px; border-left: 3px solid #facc15; padding-left: 20px; margin-left: 23px;">
+                        style="margin-top: 0px; border-left: 3px solid #facc15; padding-left: 20px; margin-left: 25px;">
 
                         @if (!empty($what_is_it))
                             <div style="margin-bottom:12px; position: relative;">
@@ -2351,27 +2351,6 @@ $colors = [
                 </div>
             </div>
         @endforeach
-    </div>
-    <div class="page-break"></div>
-    <div class="pdf-page">
-        <div class="meta">
-            <div class="h2-banner">
-                <h2 class="h2-title">Counselor's Remarks</h2>
-            </div>
-            <p>{{ $student->name }} exhibits a balanced and mature personality marked by self-awareness
-                and goal clarity. With strong cognitive strengths and humanistic values, {{ $student->name }}
-                can grow
-                into
-                leadership roles in fields that demand both intellect and empathy. Encouraging exploratory
-                learning and
-                mentorship will enrich this trajectory.</p>
-        </div>
-
-        <div class="meta">
-            <p>Signature</p>
-            <p>XYZ</p>
-            <p>Career Counsellor</p>
-        </div>
     </div>
     <div class="page-break"></div>
 </body>
