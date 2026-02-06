@@ -2235,7 +2235,7 @@ $colors = [
     <div class="pdf-page meta" style="margin-top: 0px;">
         <div class="h2-banner"
             style=" background-image: url('{{ asset('images/clusterbg.png') }}') !important; height: 80px !important; width: 500px !important; margin-bottom: 0px;">
-            <h2 class="h2-title" style="color: #000;">Customized Career<br>Recommendation</h2>
+            <h2 class="h2-title" style="color: #000; font-size: 13px; margin-top: 45px;">Customized Career<br>Recommendation</h2>
         </div>
         @php
             $top3Recs = array_slice($overallCategoryWeightages ?? [], 0, 3, true);
@@ -2263,7 +2263,7 @@ $colors = [
                     {{-- Header with Background Image --}}
                     <div
                         style="background-image: url('{{ asset('images/cbg.png') }}') !important; background-size: 100% 100%; width: 400px; height: 100px; padding-left: 60px; margin-bottom: 5px; display: flex; align-items: center;">
-                        <h3 style="margin:0; font-size: 14px; font-weight: 800; color: #000; padding-top: 4px;">
+                        <h3 style="margin:0; font-size: 9px; font-weight: 700; color: #000; padding-top: 4px;">
                             {!! strtoupper($catName) !!}@if (!empty($hook))
                                 - {!! strtoupper($hook) !!}
                             @endif
